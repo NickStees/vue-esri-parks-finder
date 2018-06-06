@@ -1,0 +1,168 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+
+  <title>A Vue.js App</title>
+
+  <!-- Default CSS and JS for City look and feel -->
+  <link rel="stylesheet" href="https://www.tampagov.net/static/css/styles.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+
+  <!-- Vue from a CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+
+<style>
+ #app{ }
+ /* .list li { list-style: none; } */
+ .list {
+   max-height: 60vh;
+   overflow: auto;
+ }
+ .list li:hover{ cursor: pointer; }
+</style>
+</head>
+
+<body>
+
+  <div style="padding: 3rem 0">
+    <section class="content container">
+
+      <!-- start of the vue app -->
+      <div id="app" v-cloak>
+        <div class="row">
+          <div class="col-sm-6">
+            <h3>Find Your Services</h3>
+            <div class="your-location" v-if="location.address">
+              <h2>{{location.address}}</h2>
+              <button @click="clearLocation()">Choose different location</button>
+            </div>
+            <div class="choose-location" v-else>
+              <input type="text" placeholder="Type your address" v-model="locationInput" @keyup.enter="getGeoCode()">
+              <button @click="getGeoCode()">Lookup</button>
+              <hr>
+              <ul class="list" v-if="locationSuggestions.length" >
+                <li v-for='item in locationSuggestions' v-on:click="saveLocation(item)">
+                  <strong>{{item.address}}</strong>
+                </li>
+              </ul>
+            </div>
+            <hr>
+            <h3>Services</h3>
+            <div class="well" v-if="trashSchedule.NAME">
+              <h4>Trash Collection</h4>
+              <strong>{{trashSchedule.NAME}}</strong> - {{trashSchedule.SCHEDULE}}
+            </div>
+            <div class="well" v-if="recycleSchedule.NAME">
+              <h4>Recycling Collection</h4>
+              <strong>{{recycleSchedule.NAME}}</strong> - {{recycleSchedule.SCHEDULE}}
+            </div>
+            <div class="well" v-if="yardSchedule.NAME">
+              <h4>Yard Waste Collection</h4>
+              <strong>{{yardSchedule.NAME}}</strong> - {{yardSchedule.SCHEDULE}}
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- end of the vue app -->
+
+    </section>
+    </div>
+
+<script>
+  // Configuration
+    var config = {
+      geoCodeUrl: "https://spatial.tampagov.net/arcgis/rest/services/Locators/RoadCenterlineLocator/GeocodeServer/findAddressCandidates?f=json&outFields=Addr_type%2C%20Score%2C%20Match_addr",
+      trashUrl: "https://spatial.tampagov.net/arcgis/rest/services/MyGovernmentServices/GovernmentServices/MapServer/13/query?f=json&geometryType=esriGeometryPoint&outFields=*",
+      recyclingUrl: "https://spatial.tampagov.net/arcgis/rest/services/MyGovernmentServices/GovernmentServices/MapServer/14/query?f=json&geometryType=esriGeometryPoint&outFields=*",
+      yardUrl: "https://spatial.tampagov.net/arcgis/rest/services/MyGovernmentServices/GovernmentServices/MapServer/15/query?f=json&geometryType=esriGeometryPoint&outFields=*",
+
+      googleMapsApiKey: "AIzaSyC-ANZln2BZrn95EVc3IiQUVF-xmAZW2uU",
+    };
+
+    var app = new Vue({
+      el: '#app',
+      data: {
+        location: {},
+        locationSuggestions: [],
+        locationInput: "",
+        spatialReference: {
+          "wkid": 102659,
+          "latestWkid": 2237
+        },
+        trashSchedule: {},
+        recycleSchedule: {},
+        yardSchedule: {},
+      },
+      mounted: function mounted() {
+        // if previously saved location load it up
+        var lastLocation = localStorage.getItem('lastLocation')
+        if(lastLocation){
+          var location = JSON.parse(lastLocation)
+          this.location = location
+          this.getSchedules(location)
+        }
+      },
+      methods: {
+        getGeoCode(){
+          var self = this;
+          var query = "&Single%20Line%20Input="+encodeURIComponent(this.locationInput);
+          jQuery.getJSON(config.geoCodeUrl+query, function (data) {
+            // Push suggestions into vue
+            self.locationSuggestions = []
+            // save spacial ref
+            self.spatialReference = data.spatialReference
+            if(data.candidates.length){
+              data.candidates.forEach(function(item){
+                self.locationSuggestions.push(item);
+              });
+            }else{
+              self.locationSuggestions.push({"address": "No matches found"});
+            }
+          });
+        },
+        saveLocation: function saveLocation(location){
+          this.location = location
+          localStorage.setItem('lastLocation', JSON.stringify(location));
+          this.getSchedules(location)
+        },
+        clearLocation: function clearLocation(){
+          this.location = {}
+          localStorage.removeItem('lastLocation')
+          this.clearSchedules()
+        },
+        getSchedules: function getSchedules(location) {
+          var self = this;
+          var geometry = {}
+          geometry.x = location.location.x
+          geometry.y = location.location.y
+          geometry.spatialReference = self.spatialReference
+          var query = "&geometry=" + geometry;
+          jQuery.getJSON(config.trashUrl + query, function (data) {
+            // Save attachments to be rendered by vue
+            self.trashSchedule = data.features[0].attributes
+          });
+          jQuery.getJSON(config.recyclingUrl + query, function (data) {
+            // Save attachments to be rendered by vue
+            self.recycleSchedule = data.features[0].attributes
+          });
+          jQuery.getJSON(config.yardUrl + query, function (data) {
+            // Save attachments to be rendered by vue
+            self.yardSchedule = data.features[0].attributes
+          });
+
+        },
+        clearSchedules: function clearSchedules(){
+          this.trashSchedule = {}
+          this.recycleSchedule = {}
+          this.yardSchedule = {}
+        }
+      }
+    });
+</script>
+</body>
+
+</html>
