@@ -11,6 +11,8 @@
   <link rel="stylesheet" href="https://www.tampagov.net/static/css/styles.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.10/lodash.min.js"></script>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
 
   <!-- Vue from a CDN -->
   <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
@@ -23,6 +25,9 @@
    overflow: auto;
  }
  .list li:hover{ cursor: pointer; }
+ .fa-pagelines{ color: green; }
+ .fa-recycle { color: blue; }
+ .fa-broom { color: goldenrod; }
 </style>
 </head>
 
@@ -41,8 +46,7 @@
               <button @click="clearLocation()">Choose different location</button>
             </div>
             <div class="choose-location" v-else>
-              <input type="text" placeholder="Type your address" v-model="locationInput" @keyup.enter="getGeoCode()">
-              <button @click="getGeoCode()">Lookup</button>
+              <input type="text" placeholder="Type your address" v-model="locationInput" @keyup.enter="getGeoCode()" v-on:input="autoSearch">
               <hr>
               <ul class="list" v-if="locationSuggestions.length" >
                 <li v-for='item in locationSuggestions' v-on:click="saveLocation(item)">
@@ -53,16 +57,20 @@
             <hr>
             <h3>Services</h3>
             <div class="well" v-if="trashSchedule.NAME">
-              <h4>Trash Collection</h4>
+              <h4><i class="fas fa-trash"></i> Trash Collection</h4>
               <strong>{{trashSchedule.NAME}}</strong> - {{trashSchedule.SCHEDULE}}
             </div>
             <div class="well" v-if="recycleSchedule.NAME">
-              <h4>Recycling Collection</h4>
+              <h4><i class="fas fa-recycle"></i> Recycling Collection</h4>
               <strong>{{recycleSchedule.NAME}}</strong> - {{recycleSchedule.SCHEDULE}}
             </div>
             <div class="well" v-if="yardSchedule.NAME">
-              <h4>Yard Waste Collection</h4>
+              <h4><i class="fab fa-pagelines"></i> Yard Waste Collection</h4>
               <strong>{{yardSchedule.NAME}}</strong> - {{yardSchedule.SCHEDULE}}
+            </div>
+            <div class="well" v-if="streetSweep.DATE">
+              <h4><i class="fas fa-broom"></i> Street Sweeping</h4>
+              <strong>{{streetSweep.DATE}}</strong> - {{streetSweep.NEIGHBORHOOD}}
             </div>
           </div>
         </div>
@@ -79,8 +87,8 @@
       trashUrl: "https://spatial.tampagov.net/arcgis/rest/services/MyGovernmentServices/GovernmentServices/MapServer/13/query?f=json&geometryType=esriGeometryPoint&outFields=*",
       recyclingUrl: "https://spatial.tampagov.net/arcgis/rest/services/MyGovernmentServices/GovernmentServices/MapServer/14/query?f=json&geometryType=esriGeometryPoint&outFields=*",
       yardUrl: "https://spatial.tampagov.net/arcgis/rest/services/MyGovernmentServices/GovernmentServices/MapServer/15/query?f=json&geometryType=esriGeometryPoint&outFields=*",
-
       googleMapsApiKey: "AIzaSyC-ANZln2BZrn95EVc3IiQUVF-xmAZW2uU",
+      streetSweepUrl: "https://spatial.tampagov.net/arcgis/rest/services/MyGovernmentServices/GovernmentServices/MapServer/12/query?f=json&geometryType=esriGeometryPoint&outFields=*",
     };
 
     var app = new Vue({
@@ -96,6 +104,7 @@
         trashSchedule: {},
         recycleSchedule: {},
         yardSchedule: {},
+        streetSweep:{},
       },
       mounted: function mounted() {
         // if previously saved location load it up
@@ -124,6 +133,10 @@
             }
           });
         },
+        autoSearch: _.debounce(function(e){
+          // debounce aka wait for user to have a slight pause then search
+          this.getGeoCode()
+        }, 300),
         saveLocation: function saveLocation(location){
           this.location = location
           localStorage.setItem('lastLocation', JSON.stringify(location));
@@ -140,7 +153,7 @@
           geometry.x = location.location.x
           geometry.y = location.location.y
           geometry.spatialReference = self.spatialReference
-          var query = "&geometry=" + geometry;
+          var query = "&geometry=" + JSON.stringify(geometry);
           jQuery.getJSON(config.trashUrl + query, function (data) {
             // Save attachments to be rendered by vue
             self.trashSchedule = data.features[0].attributes
@@ -152,6 +165,10 @@
           jQuery.getJSON(config.yardUrl + query, function (data) {
             // Save attachments to be rendered by vue
             self.yardSchedule = data.features[0].attributes
+          });
+          jQuery.getJSON(config.streetSweepUrl + query, function (data) {
+            // Save attachments to be rendered by vue
+            self.streetSweep = data.features[0].attributes
           });
 
         },
