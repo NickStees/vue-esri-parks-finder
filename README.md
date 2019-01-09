@@ -1,7 +1,29 @@
-# Demo Vue.js app using Esri Datasource
+# vue-esri-parks-finder
 
-A quick demo of a Vue.js app that uses Esri JSON api to create a parks finder.
+## Project setup
+```
+npm install
+```
 
-A demo can be found at [tampa-parks-finder.netlify.com](https://tampa-parks-finder.netlify.com/)
+### Compiles and hot-reloads for development
+```
+npm run serve
+```
 
-This example use vue.js as a script tag and can be easily integrated into websites and existing CMS's like Drupal.
+### Compiles and minifies for production
+```
+npm run build
+```
+
+### Run your tests
+```
+npm run test
+```
+
+### Lints and fixes files
+```
+npm run lint
+```
+
+### Customize configuration
+See [Configuration Reference](https://cli.vuejs.org/config/).
