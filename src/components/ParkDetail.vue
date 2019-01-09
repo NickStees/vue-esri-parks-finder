@@ -1,66 +1,68 @@
 <template>
-  <div class="row">
-    <div class="col-sm-6">&nbsp;
-      <div class="park-details well" v-if="selectedPark.NAME">
-        <a :href="getParkLinkUrl(selectedPark)">
-          <img :src="getImgUrl(selectedPark)" class="img-responsive" alt="Park Location">
-          {{selectedPark.FULLADDR}} {{selectedPark.CITY}}
-        </a>
-        <a
-          :href="getParkDirectionsLinkUrl(selectedPark)"
-          class="btn btn-default btn-xs pull-right"
-        >Get Directions</a>
-        <h1>{{selectedPark.NAME}}</h1>
-        <small v-if="selectedPark.PARKALIAS">Also known as: {{selectedPark.PARKALIAS}}</small>
-        <p>{{selectedPark.DESCRIPT}} {{selectedPark.DESCRIPT2}}</p>
-        <hr>
-        <ul class="list-group">
-          <li class="list-group-item" v-if="selectedPark.OPERDAYS">
-            Open:
-            <strong>{{selectedPark.OPERDAYS}}</strong>
-          </li>
-          <li
-            class="list-group-item"
-            v-if="selectedPark.OPERHOURS && selectedPark.OPERHOURS != 'N/A'"
-          >
-            Hours:
-            <strong>{{selectedPark.OPERHOURS}}</strong>
-          </li>
-          <li class="list-group-item" v-if="selectedPark.PHONE">
-            Phone:
-            <strong>
-              <a :href="getTelUrl(selectedPark.PHONE)">{{selectedPark.PHONE}}</a>
-            </strong>
-          </li>
-        </ul>
-        <div v-if="selectedParkAttachments.length > 0">
-          <img
-            v-for="item in selectedParkAttachments"
-            :key="item.name"
-            :src="getAttachmentImgSrc(selectedPark.OBJECTID, item)"
-            :alt="item.name"
-          >
-        </div>
-        <div v-if="selectedPark.amenities.length > 0">Amenities:
-          <ul>
-            <li v-for="item in selectedPark.amenities" :key="item.name">{{item}}</li>
+  <div class="content container">
+    <div class="row">
+      <div class="col-sm-6">&nbsp;
+        <div class="park-details well" v-if="selectedPark.NAME">
+          <a :href="getParkLinkUrl(selectedPark)">
+            <img :src="getImgUrl(selectedPark)" class="img-responsive" alt="Park Location">
+            {{selectedPark.FULLADDR}} {{selectedPark.CITY}}
+          </a>
+          <a
+            :href="getParkDirectionsLinkUrl(selectedPark)"
+            class="btn btn-default btn-xs pull-right"
+          >Get Directions</a>
+          <h1>{{selectedPark.NAME}}</h1>
+          <small v-if="selectedPark.PARKALIAS">Also known as: {{selectedPark.PARKALIAS}}</small>
+          <p>{{selectedPark.DESCRIPT}} {{selectedPark.DESCRIPT2}}</p>
+          <hr>
+          <ul class="list-group">
+            <li class="list-group-item" v-if="selectedPark.OPERDAYS">
+              Open:
+              <strong>{{selectedPark.OPERDAYS}}</strong>
+            </li>
+            <li
+              class="list-group-item"
+              v-if="selectedPark.OPERHOURS && selectedPark.OPERHOURS != 'N/A'"
+            >
+              Hours:
+              <strong>{{selectedPark.OPERHOURS}}</strong>
+            </li>
+            <li class="list-group-item" v-if="selectedPark.PHONE">
+              Phone:
+              <strong>
+                <a :href="getTelUrl(selectedPark.PHONE)">{{selectedPark.PHONE}}</a>
+              </strong>
+            </li>
           </ul>
+          <div v-if="selectedParkAttachments.length > 0">
+            <img
+              v-for="item in selectedParkAttachments"
+              :key="item.name"
+              :src="getAttachmentImgSrc(selectedPark.OBJECTID, item)"
+              :alt="item.name"
+            >
+          </div>
+          <div v-if="selectedPark.amenities.length > 0">Amenities:
+            <ul>
+              <li v-for="item in selectedPark.amenities" :key="item.name">{{item}}</li>
+            </ul>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="col-sm-6">
-      <!-- This Column show the list of parks -->
-      <h3>City of Tampa Parks</h3>
-      <input type="text" placeholder="Type to filter" v-model="filterQuery">
-      <hr>
-      <ul v-if="parksList.length" class="parklist">
-        <ParkListItem
-          v-for="park in displayedParks"
-          :key="park.attributes.NAME"
-          :park="park"
-          @view="viewParkDetails"
-        />
-      </ul>
+      <div class="col-sm-6">
+        <!-- This Column show the list of parks -->
+        <h3>City of Tampa Parks</h3>
+        <input type="text" placeholder="Type to filter" v-model="filterQuery">
+        <hr>
+        <ul v-if="parksList.length" class="parklist">
+          <ParkListItem
+            v-for="park in displayedParks"
+            :key="park.attributes.NAME"
+            :park="park"
+            @view="viewParkDetails"
+          />
+        </ul>
+      </div>
     </div>
   </div>
 </template>
