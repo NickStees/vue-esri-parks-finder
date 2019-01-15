@@ -53,6 +53,9 @@
         <!-- This Column show the list of parks -->
         <h3>City of Tampa Parks</h3>
         <input type="text" placeholder="Type to filter" v-model="filterQuery">
+        <ul v-if="messages.length >= 1">
+          <li v-for="message in messages" :key="message"> {{message}} </li>
+        </ul>
         <hr>
         <ul v-if="parksList.length" class="parklist">
           <ParkListItem
@@ -68,7 +71,8 @@
 </template>
 
 <script>
-import ParkListItem from "./ParkListItem.vue";
+import axios from 'axios'
+import ParkListItem from "./ParkListItem.vue"
 export default {
   components: {
     ParkListItem
@@ -79,17 +83,16 @@ export default {
       selectedPark: {},
       selectedParkAttachments: [],
       filterQuery: "",
-      fieldNames: {}
+      fieldNames: {},
+      messages: [],
     };
   },
   mounted() {
     // get parks info from Esri API when the component is ready(mounted)
     var self = this;
-    jQuery.getJSON(
-      "https://spatial.tampagov.net/arcgis/rest/services/Parks/Parks/MapServer/0/query?f=json&where=1%3D1&returnGeometry=false&spatialRel=esriSpatialRelIntersects&outFields=*",
-      function(data) {
+    axios.get('https://spatial.tampagov.net/arcgis/rest/services/Parks/Parks/MapServer/0/query?f=json&where=1%3D1&returnGeometry=false&spatialRel=esriSpatialRelIntersects&outFields=*').then(response => {
         // Sort parks then set them into vue.js to render the data
-        self.parksList = data.features.sort(function(a, b) {
+        self.parksList = response.data.features.sort(function(a, b) {
           //  sort alphabetical by default
           var nameA = a.attributes.NAME.toLowerCase(),
             nameB = b.attributes.NAME.toLowerCase();
@@ -100,9 +103,11 @@ export default {
           return 0; //default return value (no sorting)
         });
         // Store Human Readable Field names
-        self.fieldNames = data.fieldAliases;
-      }
-    );
+        self.fieldNames = response.data.fieldAliases;
+      }).catch(e => {
+        self.messages.push(e)
+      })
+
   },
   computed: {
     displayedParks() {
@@ -193,12 +198,14 @@ export default {
         "https://spatial.tampagov.net/arcgis/rest/services/Parks/Parks/MapServer/0/" +
         park.OBJECTID +
         "/attachments?f=json";
-      jQuery.getJSON(urlForAttachments, function(data) {
+      axios.get(urlForAttachments).then(response => {
         // Save attachments to be rendered by vue
-        data.attachmentInfos.forEach(function(item) {
+        response.data.attachmentInfos.forEach(function(item) {
           self.selectedParkAttachments.push(item);
         });
-      });
+      }).catch(e => {
+        self.messages.push(e)
+      })
       return (
         "https://www.google.com/maps/dir//" +
         park.FULLADDR +
