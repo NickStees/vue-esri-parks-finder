@@ -1,190 +1,274 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
 
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width">
+    <title>A Vue.js App</title>
 
-  <title>A Vue.js App</title>
+    <!-- Default CSS and JS for City look and feel -->
+    <link
+      rel="stylesheet"
+      href="https://www.tampagov.net/static/css/styles.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css"
+    />
 
-  <!-- Default CSS and JS for City look and feel -->
-  <link rel="stylesheet" href="https://www.tampagov.net/static/css/styles.min.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+    <!-- Vue from a CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.22/dist/vue.js"></script>
 
-  <!-- Vue from a CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+    <style>
+      #app {
+      }
+      .parklist li {
+        list-style: none;
+      }
+      .parklist {
+        max-height: 60vh;
+        overflow: auto;
+      }
+      .parklist li:hover {
+        cursor: pointer;
+      }
+    </style>
+  </head>
 
-<style>
- #app{ }
- .parklist li { list-style: none; }
- .parklist {
-   max-height: 60vh;
-   overflow: auto;
- }
- .parklist li:hover{ cursor: pointer; }
-</style>
-</head>
-
-<body>
-
-  <div style="padding: 3rem 0">
-    <section class="content container">
-
-      <!-- start of the vue app -->
-      <div id="app" v-cloak>
-        <div class="row">
-          <div class="col-sm-5" >
-            &nbsp;
-            <!-- This Column shows a selected parks details -->
-            <div class="park-details well" v-if="selectedPark.NAME">
-              <a :href="getParkLinkUrl(selectedPark)">
-                <img :src="getImgUrl(selectedPark)" class="img-responsive" alt="Park Location">
-                {{selectedPark.FULLADDR}} {{selectedPark.CITY}}
-              </a>
-                <a :href="getParkDirectionsLinkUrl(selectedPark)" class="btn btn-default btn-xs pull-right">Get Directions</a>
-              <h1>{{selectedPark.NAME}}</h1>
-              <small v-if="selectedPark.PARKALIAS">Also known as: {{selectedPark.PARKALIAS}}</small>
-                <p>{{selectedPark.DESCRIPT}} {{selectedPark.DESCRIPT2}}</p>
-                <hr>
+  <body>
+    <div style="padding: 3rem 0">
+      <section class="content container">
+        <!-- start of the vue app -->
+        <div id="app" v-cloak>
+          <div class="row">
+            <div class="col-sm-5">
+              &nbsp;
+              <!-- This Column shows a selected parks details -->
+              <div class="park-details well" v-if="selectedPark.NAME">
+                <a :href="getParkLinkUrl(selectedPark)">
+                  <img
+                    :src="getImgUrl(selectedPark)"
+                    class="img-responsive"
+                    alt="Park Location"
+                  />
+                  {{ selectedPark.FULLADDR }} {{ selectedPark.CITY }}
+                </a>
+                <a
+                  :href="getParkDirectionsLinkUrl(selectedPark)"
+                  class="btn btn-default btn-xs pull-right"
+                  >Get Directions</a
+                >
+                <h1>{{ selectedPark.NAME }}</h1>
+                <small v-if="selectedPark.PARKALIAS"
+                  >Also known as: {{ selectedPark.PARKALIAS }}</small
+                >
+                <p>{{ selectedPark.DESCRIPT }} {{ selectedPark.DESCRIPT2 }}</p>
+                <hr />
                 <ul class="list-group">
-                  <li class="list-group-item" v-if="selectedPark.OPERDAYS"> Open: <strong>{{selectedPark.OPERDAYS}}</strong></li>
-                  <li class="list-group-item" v-if="selectedPark.OPERHOURS && selectedPark.OPERHOURS != 'N/A'"> Hours: <strong>{{selectedPark.OPERHOURS}}</strong></li>
-                  <li class="list-group-item" v-if="selectedPark.PHONE"> Phone: <strong><a :href="getTelUrl(selectedPark.PHONE)">{{selectedPark.PHONE}}</a></strong></li>
+                  <li class="list-group-item" v-if="selectedPark.OPERDAYS">
+                    Open: <strong>{{ selectedPark.OPERDAYS }}</strong>
+                  </li>
+                  <li
+                    class="list-group-item"
+                    v-if="selectedPark.OPERHOURS && selectedPark.OPERHOURS != 'N/A'"
+                  >
+                    Hours: <strong>{{ selectedPark.OPERHOURS }}</strong>
+                  </li>
+                  <li class="list-group-item" v-if="selectedPark.PHONE">
+                    Phone:
+                    <strong
+                      ><a :href="getTelUrl(selectedPark.PHONE)">{{
+                        selectedPark.PHONE
+                      }}</a></strong
+                    >
+                  </li>
                 </ul>
                 <div v-if="selectedParkAttachments.length > 0">
-                  <img v-for='item in selectedParkAttachments' :src="getAttachmentImgSrc(selectedPark.OBJECTID, item)" :alt="item.name">
+                  <img
+                    v-for="item in selectedParkAttachments"
+                    :src="getAttachmentImgSrc(selectedPark.OBJECTID, item)"
+                    :alt="item.name"
+                  />
                 </div>
                 <div v-if="selectedPark.amenities.length > 0">
                   Amenities:
                   <ul>
-                    <li v-for='item in selectedPark.amenities'>{{item}}</li>
+                    <li v-for="item in selectedPark.amenities">{{ item }}</li>
                   </ul>
                 </div>
+              </div>
+            </div>
+            <div class="col-sm-7">
+              <!-- This Column show the list of parks -->
+              <h3>City of Tampa Parks</h3>
+              <input
+                type="text"
+                placeholder="Type to filter"
+                v-model="filterQuery"
+              />
+              <hr />
+              <ul class="parklist" v-if="parksList">
+                <li
+                  v-for="item in displayedParks"
+                  v-on:click="viewParkDetails(item.attributes)"
+                >
+                  <strong>{{ item.attributes.NAME }}</strong>
+                  <small v-if="item.attributes.PARKALIAS"
+                    >({{ item.attributes.PARKALIAS }})</small
+                  >
+                  - {{ item.attributes.FULLADDR }}
+                </li>
+              </ul>
             </div>
           </div>
-          <div class="col-sm-7">
-            <!-- This Column show the list of parks -->
-            <h3>City of Tampa Parks</h3>
-            <input type="text" placeholder="Type to filter" v-model="filterQuery">
-            <hr>
-            <ul class="parklist" v-if="parksList" >
-              <li v-for='item in displayedParks' v-on:click="viewParkDetails(item.attributes)">
-                <strong>{{item.attributes.NAME}}</strong>
-                <small v-if="item.attributes.PARKALIAS">({{item.attributes.PARKALIAS}})</small>
-                 - {{item.attributes.FULLADDR}}
-              </li>
-            </ul>
-          </div>
         </div>
-      </div>
-      <!-- end of the vue app -->
-
-    </section>
+        <!-- end of the vue app -->
+      </section>
     </div>
 
-<script>
-  // Configuration
-    var config = {
-      parksListUrl: "https://spatial.tampagov.net/arcgis/rest/services/Parks/Parks/MapServer/0/query?f=json&where=1%3D1&returnGeometry=false&spatialRel=esriSpatialRelIntersects&outFields=*",
-      parkFocusUrl: "https://apps.tampagov.net/park_finder_webapp/default.htm?selectedFeatureID=",
-      googleMapsApiKey: "AIzaSyC-ANZln2BZrn95EVc3IiQUVF-xmAZW2uU",
-    };
+    <script>
+      // Configuration
+      var config = {
+        parksListUrl:
+          "https://spatial.tampagov.net/arcgis/rest/services/Parks/Parks/MapServer/0/query?f=json&where=1%3D1&returnGeometry=false&spatialRel=esriSpatialRelIntersects&outFields=*",
+        parkFocusUrl:
+          "https://apps.tampagov.net/park_finder_webapp/default.htm?selectedFeatureID=",
+        googleMapsApiKey: "AIzaSyC-ANZln2BZrn95EVc3IiQUVF-xmAZW2uU",
+      };
 
-    var app = new Vue({
-      el: '#app',
-      data: {
-        parksList: [],
-        selectedPark: {},
-        selectedParkAttachments: [],
-        filterQuery: "",
-        fieldNames: {},
-      },
-      mounted: function mounted() {
-        // get parks info from Esri API when the component is ready(mounted)
-        var self = this;
-        jQuery.getJSON(config.parksListUrl, function (data) {
-          // Sort parks then set them into vue.js to render the data
-          self.parksList = data.features.sort(function (a, b) {
-            //  sort alphabetical by default
-            var nameA = a.attributes.NAME.toLowerCase(),
-              nameB = b.attributes.NAME.toLowerCase();
-            if (nameA < nameB) //sort string ascending
-              return -1;
-            if (nameA > nameB) return 1;
-            return 0; //default return value (no sorting)
-          });
-          // Store Human Readable Field names
-          self.fieldNames = data.fieldAliases;
-        });
-      },
-      computed: {
-        displayedParks: function displayedParks() {
-          // This is a filtered set of results that is returned to the vue to be rendered
-          var parks = this.parksList;
-          var filteredParks = parks.filter(this.filterItems);
-          return filteredParks;
-        }
-      },
-      methods: {
-        filterItems: function filterItems(item) {
-          // Our custom filter to filter the parks
-          var lowercaseName = item.attributes.NAME.toLowerCase();
-          // Some don't have descriptions so if they don't just use an empty sting
-          var lowercaseDec = item.attributes.DESCRIPT ? item.attributes.DESCRIPT.toLowerCase() : "";
-          var lowercaseAlias = item.attributes.PARKALIAS ? item.attributes.PARKALIAS.toLowerCase() : "";
-          var lowercaseQuery = this.filterQuery.toLowerCase();
-          var selection = lowercaseName + lowercaseDec + lowercaseAlias;
-          if (selection.indexOf(lowercaseQuery) > -1) {
-            return true;
-          } else {
-            return false;
-          }
+      var app = new Vue({
+        el: "#app",
+        data: {
+          parksList: [],
+          selectedPark: {},
+          selectedParkAttachments: [],
+          filterQuery: "",
+          fieldNames: {},
         },
-        viewParkDetails: function viewParkDetails(park) {
-          // take the current park and pipe it into the details template
-          // pull out park amenities into an array for easier rendering
-          park.amenities = [];
-          this.selectedParkAttachments = []; //clear out previous attachments
-          for (var key in park) {
-            if (park[key] == "Yes") {
-              // Add this object key to the amenities list
-              // Use the fieldNames object to translate the keys into human readable format
-              park.amenities.push(this.fieldNames[key]);
-            }
-          }
-          this.selectedPark = park;
-          this.getParkAttachments(park);
-        },
-        getImgUrl: function getImgUrl(park) {
-          return "https://maps.googleapis.com/maps/api/staticmap?center=" + encodeURI(park.FULLADDR) + "+" + encodeURI(park.CITY) + "+" + encodeURI(park.STATE) + "&zoom=16&size=555x350&key="+config.googleMapsApiKey;
-        },
-        getParkLinkUrl: function getParkLinkUrl(park) {
-          return config.parkFocusUrl + park.FACILITYID;
-        },
-        getParkDirectionsLinkUrl: function getParkDirectionsLinkUrl(park) {
-          return "https://www.google.com/maps/dir//" + park.FULLADDR + "+" + park.CITY + "+" + park.STATE + "+" + park.ZIPCODE;
-        },
-        getAttachmentImgSrc: function getAttachmentImgSrc(id, attachment) {
-          return "https://spatial.tampagov.net/arcgis/rest/services/Parks/Parks/MapServer/0/"+id+"/attachments/"+ attachment.id;
-        },
-        getTelUrl: function getTelUrl(tel) {
-          return "tel:"+tel;
-        },
-        getParkAttachments: function getParkAttachments(park) {
+        mounted: function mounted() {
+          // get parks info from Esri API when the component is ready(mounted)
           var self = this;
-          var urlForAttachments = "https://spatial.tampagov.net/arcgis/rest/services/Parks/Parks/MapServer/0/" + park.OBJECTID + "/attachments?f=json";
-          jQuery.getJSON(urlForAttachments, function (data) {
-            // Save attachments to be rendered by vue
-            data.attachmentInfos.forEach(function(item){
-              self.selectedParkAttachments.push(item);
+          jQuery.getJSON(config.parksListUrl, function(data) {
+            // Sort parks then set them into vue.js to render the data
+            self.parksList = data.features.sort(function(a, b) {
+              //  sort alphabetical by default
+              var nameA = a.attributes.NAME.toLowerCase(),
+                nameB = b.attributes.NAME.toLowerCase();
+              if (nameA < nameB)
+                //sort string ascending
+                return -1;
+              if (nameA > nameB) return 1;
+              return 0; //default return value (no sorting)
             });
+            // Store Human Readable Field names
+            self.fieldNames = data.fieldAliases;
           });
-          return "https://www.google.com/maps/dir//" + park.FULLADDR + "+" + park.CITY + "+" + park.STATE + "+" + park.ZIPCODE;
-        }
-      }
-    });
-</script>
-</body>
-
+        },
+        computed: {
+          displayedParks: function displayedParks() {
+            // This is a filtered set of results that is returned to the vue to be rendered
+            var parks = this.parksList;
+            var filteredParks = parks.filter(this.filterItems);
+            return filteredParks;
+          },
+        },
+        methods: {
+          filterItems: function filterItems(item) {
+            // Our custom filter to filter the parks
+            var lowercaseName = item.attributes.NAME.toLowerCase();
+            // Some don't have descriptions so if they don't just use an empty sting
+            var lowercaseDec = item.attributes.DESCRIPT
+              ? item.attributes.DESCRIPT.toLowerCase()
+              : "";
+            var lowercaseAlias = item.attributes.PARKALIAS
+              ? item.attributes.PARKALIAS.toLowerCase()
+              : "";
+            var lowercaseQuery = this.filterQuery.toLowerCase();
+            var selection = lowercaseName + lowercaseDec + lowercaseAlias;
+            if (selection.indexOf(lowercaseQuery) > -1) {
+              return true;
+            } else {
+              return false;
+            }
+          },
+          viewParkDetails: function viewParkDetails(park) {
+            // take the current park and pipe it into the details template
+            // pull out park amenities into an array for easier rendering
+            park.amenities = [];
+            this.selectedParkAttachments = []; //clear out previous attachments
+            for (var key in park) {
+              if (park[key] == "Yes") {
+                // Add this object key to the amenities list
+                // Use the fieldNames object to translate the keys into human readable format
+                park.amenities.push(this.fieldNames[key]);
+              }
+            }
+            this.selectedPark = park;
+            this.getParkAttachments(park);
+          },
+          getImgUrl: function getImgUrl(park) {
+            return (
+              "https://maps.googleapis.com/maps/api/staticmap?center=" +
+              encodeURI(park.FULLADDR) +
+              "+" +
+              encodeURI(park.CITY) +
+              "+" +
+              encodeURI(park.STATE) +
+              "&zoom=16&size=555x350&key=" +
+              config.googleMapsApiKey
+            );
+          },
+          getParkLinkUrl: function getParkLinkUrl(park) {
+            return config.parkFocusUrl + park.FACILITYID;
+          },
+          getParkDirectionsLinkUrl: function getParkDirectionsLinkUrl(park) {
+            return (
+              "https://www.google.com/maps/dir//" +
+              park.FULLADDR +
+              "+" +
+              park.CITY +
+              "+" +
+              park.STATE +
+              "+" +
+              park.ZIPCODE
+            );
+          },
+          getAttachmentImgSrc: function getAttachmentImgSrc(id, attachment) {
+            return (
+              "https://spatial.tampagov.net/arcgis/rest/services/Parks/Parks/MapServer/0/" +
+              id +
+              "/attachments/" +
+              attachment.id
+            );
+          },
+          getTelUrl: function getTelUrl(tel) {
+            return "tel:" + tel;
+          },
+          getParkAttachments: function getParkAttachments(park) {
+            var self = this;
+            var urlForAttachments =
+              "https://spatial.tampagov.net/arcgis/rest/services/Parks/Parks/MapServer/0/" +
+              park.OBJECTID +
+              "/attachments?f=json";
+            jQuery.getJSON(urlForAttachments, function(data) {
+              // Save attachments to be rendered by vue
+              data.attachmentInfos.forEach(function(item) {
+                self.selectedParkAttachments.push(item);
+              });
+            });
+            return (
+              "https://www.google.com/maps/dir//" +
+              park.FULLADDR +
+              "+" +
+              park.CITY +
+              "+" +
+              park.STATE +
+              "+" +
+              park.ZIPCODE
+            );
+          },
+        },
+      });
+    </script>
+  </body>
 </html>
