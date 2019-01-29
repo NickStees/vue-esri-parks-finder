@@ -8,8 +8,11 @@
 
         <div class="col-sm-6">
           <h3>City of Tampa Parks</h3>
-          <input type="text" placeholder="Type to filter" v-model="filterQuery">
-          <h5>Amenities</h5>
+          <input type="search" placeholder="Type to filter" v-model="filterQuery">
+          <ul v-if="messages.length >= 1">
+            <li v-for="message in messages" :key="message"> {{message}} </li>
+          </ul>
+          <h4>Amenities</h4>
           <selectize v-model="selected" :settings="settings" multiple>
             <!-- settings is optional -->
             <option v-for="field in fields" :key="field.name" :value="field.name">{{field.alias}}</option>
@@ -41,6 +44,7 @@
 import ParkDetail from "./components/ParkDetail.vue";
 import ParkListItem from "./components/ParkListItem.vue";
 import Selectize from "vue2-selectize";
+import axios from 'axios'
 
 export default {
   name: "app",
@@ -57,17 +61,16 @@ export default {
       fieldNames: {},
       fields: {},
       selected: null,
-      settings: {} // https://github.com/selectize/selectize.js/blob/master/docs/usage.md
+      settings: {},
+      messages: [],
     };
   },
   mounted() {
     // get parks info from Esri API when the component is ready(mounted)
     var self = this;
-    jQuery.getJSON(
-      "https://spatial.tampagov.net/arcgis/rest/services/Parks/Parks/MapServer/0/query?f=json&where=1%3D1&returnGeometry=false&spatialRel=esriSpatialRelIntersects&outFields=*",
-      function(data) {
+    axios.get('https://spatial.tampagov.net/arcgis/rest/services/Parks/Parks/MapServer/0/query?f=json&where=1%3D1&returnGeometry=false&spatialRel=esriSpatialRelIntersects&outFields=*').then(response => {
         // Sort parks then set them into vue.js to render the data
-        self.parksList = data.features.sort(function(a, b) {
+        self.parksList = response.data.features.sort(function(a, b) {
           //  sort alphabetical by default
           var nameA = a.attributes.NAME.toLowerCase(),
             nameB = b.attributes.NAME.toLowerCase();
@@ -78,12 +81,14 @@ export default {
           return 0; //default return value (no sorting)
         });
         // Store Human Readable Field names
-        self.fieldNames = data.fieldAliases;
-        self.fields = data.fields.filter(function(field) {
+        self.fieldNames = response.data.fieldAliases;
+        self.fields = response.data.fields.filter(function(field) {
+          // if its a lenght of 3 its likely a yes/no value which is an ammenity
           return field.length === 3;
         });
-      }
-    );
+      }).catch(e => {
+        self.messages.push(e)
+      })
   },
   computed: {
     displayedParks() {
@@ -155,5 +160,21 @@ export default {
 }
 .parklist li:hover {
   cursor: pointer;
+}
+input[type=search]::-webkit-search-cancel-button {
+  -webkit-appearance: searchfield-cancel-button;
+}
+input[type=search] {
+  color: #000;
+  font-size: 18px;
+  font-weight: 400;
+  padding: 4px 14px;
+  background: transparent none repeat scroll 0 0;
+  border: 1px solid #ccc;
+  height: auto;
+  border-radius: 4px;
+  display: inline-block;
+  width: 100%;
+
 }
 </style>

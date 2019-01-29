@@ -42,6 +42,8 @@
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
   props: {
     selectedPark: {
@@ -109,9 +111,12 @@ export default {
         "https://spatial.tampagov.net/arcgis/rest/services/Parks/Parks/MapServer/0/" +
         park.OBJECTID +
         "/attachments?f=json";
-      jQuery.getJSON(urlForAttachments, function(data) {
-        self.attachments = data.attachmentInfos;
-      });
+      axios.get(urlForAttachments).then(response => {
+        // Save attachments to be rendered by vue
+        self.attachments = response.data.attachmentInfos
+      }).catch(e => {
+        self.messages.push(e)
+      })
     },
     getAttachmentImgSrc(id, attachment) {
       return (
