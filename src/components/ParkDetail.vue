@@ -122,7 +122,7 @@ export default {
           self.attachments = response.data.attachmentInfos;
         })
         .catch(e => {
-          self.messages.push(e);
+          self.messages.push(e.message);
         });
     }
   }

@@ -10,7 +10,7 @@
           <h3>City of Tampa Parks</h3>
           <input type="search" placeholder="Type to filter" v-model="filterQuery">
           <ul v-if="messages.length >= 1">
-            <li v-for="message in messages" :key="message"> {{message}} </li>
+            <li v-for="message in messages" :key="message">{{message}}</li>
           </ul>
           <h4>Amenities</h4>
           <selectize v-model="selected" :settings="settings" multiple>
@@ -22,17 +22,25 @@
             v-if="parksList.length !== displayedParks.length"
           >Displaying {{displayedParks.length}} of {{parksList.length}} parks</small>
           <hr>
-          <ul v-if="displayedParks.length" class="parklist">
-            <ParkListItem
-              v-for="park in displayedParks"
-              :key="park.attributes.NAME"
-              :park="park"
-              @view="viewParkDetails"
-            />
-          </ul>
+          <div class="lds-ring" v-if="showLoader">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
           <div v-else>
-            <h3>No parks found based on your selections</h3>
-            <p>Try adjusting your filters above.</p>
+            <ul v-if="displayedParks.length" class="parklist">
+              <ParkListItem
+                v-for="park in displayedParks"
+                :key="park.attributes.NAME"
+                :park="park"
+                @view="viewParkDetails"
+              />
+            </ul>
+            <div v-else>
+              <h3>No parks found based on your selections</h3>
+              <p>Try adjusting your filters above.</p>
+            </div>
           </div>
         </div>
       </div>
@@ -44,7 +52,7 @@
 import ParkDetail from "./components/ParkDetail.vue";
 import ParkListItem from "./components/ParkListItem.vue";
 import Selectize from "vue2-selectize";
-import axios from 'axios'
+import axios from "axios";
 
 export default {
   name: "app",
@@ -63,12 +71,18 @@ export default {
       selected: null,
       settings: {},
       messages: [],
+      showLoader: true
     };
   },
   mounted() {
     // get parks info from Esri API when the component is ready(mounted)
     var self = this;
-    axios.get('https://spatial.tampagov.net/arcgis/rest/services/Parks/Parks/MapServer/0/query?f=json&where=1%3D1&returnGeometry=false&spatialRel=esriSpatialRelIntersects&outFields=*').then(response => {
+    axios
+      .get(
+        "https://spatial.tampagov.net/arcgis/rest/services/Parks/Parks/MapServer/0/query?f=json&where=1%3D1&returnGeometry=false&spatialRel=esriSpatialRelIntersects&outFields=*"
+      )
+      .then(response => {
+        this.showLoader = false;
         // Sort parks then set them into vue.js to render the data
         self.parksList = response.data.features.sort(function(a, b) {
           //  sort alphabetical by default
@@ -83,23 +97,27 @@ export default {
         });
         // Store Human Readable Field names
         self.fieldNames = response.data.fieldAliases;
-        self.fields = response.data.fields.filter(function(field) {
-          // if its a lenght of 3 its likely a yes/no value which is an ammenity
-          return field.length === 3;
-        }).sort(function(a, b) {
-          //  sort alphabetical by default
-          var nameA = a.alias.toLowerCase(),
-            nameB = b.alias.toLowerCase();
-          if (nameA < nameB)
-            //sort string ascending
-            return -1;
+        self.fields = response.data.fields
+          .filter(function(field) {
+            // if its a lenght of 3 its likely a yes/no value which is an ammenity
+            return field.length === 3;
+          })
+          .sort(function(a, b) {
+            //  sort alphabetical by default
+            var nameA = a.alias.toLowerCase(),
+              nameB = b.alias.toLowerCase();
+            if (nameA < nameB)
+              //sort string ascending
+              return -1;
 
-          if (nameA > nameB) return 1;
-          return 0; //default return value (no sorting)
-        });
-      }).catch(e => {
-        self.messages.push(e)
+            if (nameA > nameB) return 1;
+            return 0; //default return value (no sorting)
+          });
       })
+      .catch(e => {
+        this.showLoader = false;
+        self.messages.push(e.message);
+      });
   },
   computed: {
     displayedParks() {
@@ -172,10 +190,10 @@ export default {
 .parklist li:hover {
   cursor: pointer;
 }
-input[type=search]::-webkit-search-cancel-button {
+input[type="search"]::-webkit-search-cancel-button {
   -webkit-appearance: searchfield-cancel-button;
 }
-input[type=search] {
+input[type="search"] {
   color: #000;
   font-size: 18px;
   font-weight: 400;
@@ -186,6 +204,42 @@ input[type=search] {
   border-radius: 4px;
   display: inline-block;
   width: 100%;
-
+}
+// ajax loader
+.lds-ring {
+  display: inline-block;
+  position: relative;
+  width: 64px;
+  height: 64px;
+  margin-left: 38%;
+}
+.lds-ring div {
+  box-sizing: border-box;
+  display: block;
+  position: absolute;
+  width: 51px;
+  height: 51px;
+  margin: 6px;
+  border: 6px solid rgb(41, 41, 41);
+  border-radius: 50%;
+  animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  border-color: rgb(41, 41, 41) transparent transparent transparent;
+}
+.lds-ring div:nth-child(1) {
+  animation-delay: -0.45s;
+}
+.lds-ring div:nth-child(2) {
+  animation-delay: -0.3s;
+}
+.lds-ring div:nth-child(3) {
+  animation-delay: -0.15s;
+}
+@keyframes lds-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 </style>
