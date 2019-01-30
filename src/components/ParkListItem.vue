@@ -2,7 +2,8 @@
   <li @click="$emit('view', park.attributes)">
     <strong>{{park.attributes.NAME}}</strong>
     <small v-if="park.attributes.PARKALIAS">({{park.attributes.PARKALIAS}})</small>
-    - {{park.attributes.FULLADDR}}
+    -
+    <span class="address">{{park.attributes.FULLADDR}}</span>
   </li>
 </template>
 
@@ -18,4 +19,7 @@ export default {
 </script>
 
 <style scoped>
+.address {
+  font-size: 80%;
+}
 </style>

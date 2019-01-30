@@ -155,6 +155,7 @@ export default {
       }
     },
     viewParkDetails(park) {
+      window.scrollTo(0, 0);
       // take the current park and pipe it into the details template
       // pull out park amenities into an array for easier rendering
       park.amenities = [];
