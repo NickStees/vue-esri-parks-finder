@@ -77,6 +77,7 @@ export default {
           if (nameA < nameB)
             //sort string ascending
             return -1;
+
           if (nameA > nameB) return 1;
           return 0; //default return value (no sorting)
         });
@@ -85,6 +86,16 @@ export default {
         self.fields = response.data.fields.filter(function(field) {
           // if its a lenght of 3 its likely a yes/no value which is an ammenity
           return field.length === 3;
+        }).sort(function(a, b) {
+          //  sort alphabetical by default
+          var nameA = a.alias.toLowerCase(),
+            nameB = b.alias.toLowerCase();
+          if (nameA < nameB)
+            //sort string ascending
+            return -1;
+
+          if (nameA > nameB) return 1;
+          return 0; //default return value (no sorting)
         });
       }).catch(e => {
         self.messages.push(e)
