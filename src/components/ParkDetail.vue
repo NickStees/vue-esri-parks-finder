@@ -26,12 +26,12 @@
       </li>
     </ul>
     <div v-if="parkAttachments || attachments.length > 0">
-      <img
-        v-for="item in attachments"
-        :key="item.name"
-        :src="getAttachmentImgSrc(selectedPark.OBJECTID, item)"
-        :alt="item.name"
-      >
+      <ParkAttachment
+        v-for="attachment in attachments"
+        :key="attachment.id"
+        :attachment="attachment"
+        :parkId="selectedPark.OBJECTID"
+      />
     </div>
     <div v-if="selectedPark.amenities.length > 0">Amenities:
       <ul>
@@ -42,7 +42,8 @@
 </template>
 
 <script>
-import axios from 'axios'
+import axios from "axios";
+import ParkAttachment from "./ParkAttachment.vue";
 
 export default {
   props: {
@@ -50,6 +51,9 @@ export default {
       type: Object,
       required: true
     }
+  },
+  components: {
+    ParkAttachment
   },
   data() {
     return {
@@ -111,20 +115,15 @@ export default {
         "https://spatial.tampagov.net/arcgis/rest/services/Parks/Parks/MapServer/0/" +
         park.OBJECTID +
         "/attachments?f=json";
-      axios.get(urlForAttachments).then(response => {
-        // Save attachments to be rendered by vue
-        self.attachments = response.data.attachmentInfos
-      }).catch(e => {
-        self.messages.push(e)
-      })
-    },
-    getAttachmentImgSrc(id, attachment) {
-      return (
-        "https://spatial.tampagov.net/arcgis/rest/services/Parks/Parks/MapServer/0/" +
-        id +
-        "/attachments/" +
-        attachment.id
-      );
+      axios
+        .get(urlForAttachments)
+        .then(response => {
+          // Save attachments to be rendered by vue
+          self.attachments = response.data.attachmentInfos;
+        })
+        .catch(e => {
+          self.messages.push(e);
+        });
     }
   }
 };
