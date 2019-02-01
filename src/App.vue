@@ -125,13 +125,13 @@ export default {
   computed: {
     displayedParks() {
       // This is a filtered set of results that is returned to the vue to be rendered
-      var parks = this.parksList;
-      var filteredParks = parks.filter(this.filterItems);
-      // filter by amenities
+      var parks = this.parksList; //take all the parks
+      var filteredParks = parks.filter(this.filterItems); //filter them against the input
+      // then fitler the input against the amenities
       if (this.selected && this.selected.length > 0) {
-        this.selected.forEach(function(term) {
+        this.selected.forEach(function(option) {
           filteredParks = filteredParks.filter(function(item) {
-            return item.attributes[term.value] == "Yes";
+            return item.attributes[option.value] == "Yes";
           });
         });
       }
@@ -184,6 +184,9 @@ export default {
 }
 .parklist li {
   list-style: none;
+}
+li {
+  line-height: 1.8;
 }
 .parklist {
   max-height: 60vh;
