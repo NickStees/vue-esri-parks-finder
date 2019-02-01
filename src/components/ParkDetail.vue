@@ -7,7 +7,9 @@
     <a :href="googleDirections" class="btn btn-default btn-xs pull-right">Get Directions</a>
     <h1>{{selectedPark.NAME}}</h1>
     <small v-if="selectedPark.PARKALIAS">Also known as: {{selectedPark.PARKALIAS}}</small>
-    <p>{{selectedPark.DESCRIPT}} {{selectedPark.DESCRIPT2}}</p>
+    <p
+      v-if="selectedPark.DESCRIPT || selectedPark.DESCRIPT2"
+    >{{selectedPark.DESCRIPT}} {{selectedPark.DESCRIPT2}}</p>
     <hr>
     <ul class="list-group">
       <li class="list-group-item" v-if="selectedPark.OPERDAYS">
