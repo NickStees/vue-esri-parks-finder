@@ -7,18 +7,21 @@
         </div>
 
         <div class="col-sm-6">
-          <h3>City of Tampa Parks</h3>
+          <h3>Find a Tampa Park</h3>
           <input type="search" placeholder="Type to filter" v-model="filterQuery">
           <ul v-if="messages.length >= 1">
             <li v-for="message in messages" :key="message">{{message}}</li>
           </ul>
           <h4>Amenities</h4>
           <v-select multiple v-model="selected" :options="options"></v-select>
-          <small
-            class="text-muted text-right"
-            v-if="parksList.length !== displayedParks.length"
-          >Displaying {{displayedParks.length}} of {{parksList.length}} parks</small>
-          <hr>
+          <div class="meta-info">
+            <small class="text-muted text-right" v-if="parksList.length !== displayedParks.length">
+              Displaying
+              <strong>{{displayedParks.length}}</strong>
+              of
+              <strong>{{parksList.length}}</strong> parks
+            </small>
+          </div>
           <div class="lds-ring" v-if="showLoader">
             <div></div>
             <div></div>
@@ -192,9 +195,14 @@ li {
   max-height: 60vh;
   overflow: auto;
   padding-left: 0;
+  background-color: #f5f5f5;
+  padding: 1em;
 }
 .parklist li:hover {
   cursor: pointer;
+}
+.dropdown-toggle {
+  background-color: #f5f5f5 !important;
 }
 input[type="search"]::-webkit-search-cancel-button {
   -webkit-appearance: searchfield-cancel-button;
@@ -205,18 +213,16 @@ input[type="search"] {
   font-weight: 400;
   padding: 4px 14px;
   background: transparent none repeat scroll 0 0;
+  background-color: #f5f5f5;
   border: 1px solid #ccc;
   height: auto;
   border-radius: 4px;
   display: inline-block;
   width: 100%;
 }
-
-// unstyle vue multiselect
-.multiselect input[type="text"]:focus {
-  border: 0;
+.meta-info {
+  min-height: 2.5rem;
 }
-
 // ajax loader
 .lds-ring {
   display: inline-block;
