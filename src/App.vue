@@ -332,6 +332,8 @@ input[type="search"] {
 .dog {
   left: 25%;
   animation: back-forth 20s ease-in-out infinite;
+  top: -1.02rem;
+  font-size: 85%;
 }
 .bike {
   left: 45%;
@@ -340,6 +342,7 @@ input[type="search"] {
 .basketball {
   left: 65%;
   animation: back-forth 16s ease-in-out infinite;
+  font-size: 105%;
 }
 @keyframes bike-across {
   0% {
