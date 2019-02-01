@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="padded">
     <img
       v-if="attachment.contentType.indexOf('image/') != -1"
       :key="attachment.name"
@@ -37,4 +37,7 @@ export default {
 </script>
 
 <style scoped>
+.padded {
+  margin: 1rem 0;
+}
 </style>
