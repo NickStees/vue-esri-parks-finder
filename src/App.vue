@@ -312,19 +312,18 @@ input[type="search"] {
 }
 @keyframes slow-bounce {
   0% {
-    transform: translatey(0rem);
+    transform: translatey(0.3rem);
   }
   50% {
-    transform: translatey(0.45rem);
+    transform: translatey(0.65rem);
   }
   100% {
-    transform: translatey(0rem);
+    transform: translatey(0.3rem);
   }
 }
 .tree1 {
   left: 5%;
   font-size: 111%;
-  top: -1.4rem !important;
 }
 .tree2 {
   left: 83%;
@@ -340,6 +339,7 @@ input[type="search"] {
 }
 .basketball {
   left: 65%;
+  animation: back-forth 16s ease-in-out infinite;
 }
 @keyframes bike-across {
   0% {
@@ -360,14 +360,32 @@ input[type="search"] {
     transform: translate(-10rem, 0px) rotateY(180deg);
     // transform: translate(10rem, 0px);
   }
-  // 50% {
-  //   transform: translate(-80vw, 0px);
-  // }
   75% {
     transform: translate(6rem, 0px) rotateY(180deg);
   }
   76% {
     transform: translate(6rem, 0px) rotateY(0deg);
+  }
+  100% {
+    transform: translate(0px, 0px) rotateY(0deg);
+  }
+}
+@keyframes back-forth2 {
+  0% {
+    transform: translate(0px, 0px);
+  }
+  15% {
+    transform: translate(-0.5rem, 0px);
+  }
+  16% {
+    transform: translate(-0.5rem, 0px) rotateY(180deg);
+    // transform: translate(10rem, 0px);
+  }
+  65% {
+    transform: translate(1rem, 0px) rotateY(180deg);
+  }
+  66% {
+    transform: translate(1rem, 0px) rotateY(0deg);
   }
   100% {
     transform: translate(0px, 0px) rotateY(0deg);
