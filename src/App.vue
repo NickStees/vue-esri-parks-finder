@@ -13,10 +13,7 @@
             <li v-for="message in messages" :key="message">{{message}}</li>
           </ul>
           <h4>Amenities</h4>
-          <selectize v-model="selected" :settings="settings" multiple>
-            <!-- settings is optional -->
-            <option v-for="field in fields" :key="field.name" :value="field.name">{{field.alias}}</option>
-          </selectize>
+          <v-select multiple v-model="selected" :options="options"></v-select>
           <small
             class="text-muted text-right"
             v-if="parksList.length !== displayedParks.length"
@@ -51,7 +48,7 @@
 <script>
 import ParkDetail from "./components/ParkDetail.vue";
 import ParkListItem from "./components/ParkListItem.vue";
-import Selectize from "vue2-selectize";
+import vSelect from "vue-select";
 import axios from "axios";
 
 export default {
@@ -59,7 +56,7 @@ export default {
   components: {
     ParkDetail,
     ParkListItem,
-    Selectize
+    vSelect
   },
   data() {
     return {
@@ -68,8 +65,8 @@ export default {
       filterQuery: "",
       fieldNames: {},
       fields: {},
+      options: [],
       selected: null,
-      settings: {},
       messages: [],
       showLoader: true
     };
@@ -112,6 +109,12 @@ export default {
 
             if (nameA > nameB) return 1;
             return 0; //default return value (no sorting)
+          })
+          .forEach(item => {
+            self.options.push({
+              value: item.name,
+              label: item.alias
+            });
           });
       })
       .catch(e => {
@@ -128,7 +131,7 @@ export default {
       if (this.selected && this.selected.length > 0) {
         this.selected.forEach(function(term) {
           filteredParks = filteredParks.filter(function(item) {
-            return item.attributes[term] == "Yes";
+            return item.attributes[term.value] == "Yes";
           });
         });
       }
@@ -205,6 +208,12 @@ input[type="search"] {
   display: inline-block;
   width: 100%;
 }
+
+// unstyle vue multiselect
+.multiselect input[type="text"]:focus {
+  border: 0;
+}
+
 // ajax loader
 .lds-ring {
   display: inline-block;
