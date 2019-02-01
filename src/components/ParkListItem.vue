@@ -1,9 +1,8 @@
 <template>
   <li @click="$emit('view', park.attributes)">
+    <span class="address">{{park.attributes.FULLADDR}}</span>
     <strong>{{park.attributes.NAME}}</strong>
     <small v-if="park.attributes.PARKALIAS">({{park.attributes.PARKALIAS}})</small>
-    -
-    <span class="address">{{park.attributes.FULLADDR}}</span>
   </li>
 </template>
 
@@ -21,5 +20,9 @@ export default {
 <style scoped>
 .address {
   font-size: 80%;
+  float: right;
+}
+small {
+  padding-left: 0.3rem;
 }
 </style>

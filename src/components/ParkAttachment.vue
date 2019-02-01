@@ -18,7 +18,7 @@
 <script>
 export default {
   props: {
-    parkId: String,
+    parkId: Number,
     attachment: {
       type: Object,
       required: true

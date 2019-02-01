@@ -1,13 +1,27 @@
 <template>
   <div id="app">
     <div class="content container">
+      <div class="row text-center">
+        <h1>Find a Tampa Park</h1>
+        <div class="park">
+          <div class="sky">
+            <div class="sun">🌞</div>
+          </div>
+          <div class="ground">
+            <div class="tree1">🌳</div>
+            <div class="dog">🐕</div>
+            <div class="bike">🚴</div>
+            <div class="basketball">⛹</div>
+            <div class="tree2">🌲</div>
+          </div>
+        </div>
+      </div>
       <div class="row">
         <div class="col-sm-6">&nbsp;
           <ParkDetail v-if="selectedPark" :selectedPark="selectedPark"/>
         </div>
 
         <div class="col-sm-6">
-          <h3>Find a Tampa Park</h3>
           <input type="search" placeholder="Type to filter" v-model="filterQuery">
           <ul v-if="messages.length >= 1">
             <li v-for="message in messages" :key="message">{{message}}</li>
@@ -187,6 +201,9 @@ export default {
 }
 .parklist li {
   list-style: none;
+  background-color: #f5f5f5;
+  padding: 0.25rem 0.65rem;
+  margin: 0.65rem 0.33rem;
 }
 li {
   line-height: 1.8;
@@ -195,8 +212,6 @@ li {
   max-height: 60vh;
   overflow: auto;
   padding-left: 0;
-  background-color: #f5f5f5;
-  padding: 1em;
 }
 .parklist li:hover {
   cursor: pointer;
@@ -258,6 +273,104 @@ input[type="search"] {
   }
   100% {
     transform: rotate(360deg);
+  }
+}
+.park {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+  overflow: hidden;
+}
+.ground {
+  background-color: #6fc56a;
+  height: 1.5rem;
+  position: relative;
+  border-radius: 0 0 50% 50%;
+}
+.ground > div {
+  position: absolute;
+  top: -1rem;
+}
+.sky {
+  height: 3rem;
+  background-color: #b5ebff;
+  background: linear-gradient(
+    to bottom,
+    #feffff 0%,
+    #ddf1f9 35%,
+    #a0d8ef 100%
+  ); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  position: relative;
+  border-radius: 50% 50% 0 0;
+}
+.sun {
+  position: absolute;
+  left: 15%;
+  font-size: 121%;
+  top: -0.5rem;
+  animation: slow-bounce 3.2s ease-in-out infinite;
+}
+@keyframes slow-bounce {
+  0% {
+    transform: translatey(0rem);
+  }
+  50% {
+    transform: translatey(0.45rem);
+  }
+  100% {
+    transform: translatey(0rem);
+  }
+}
+.tree1 {
+  left: 5%;
+  font-size: 111%;
+  top: -1.4rem !important;
+}
+.tree2 {
+  left: 83%;
+  font-size: 108%;
+}
+.dog {
+  left: 25%;
+  animation: back-forth 20s ease-in-out infinite;
+}
+.bike {
+  left: 45%;
+  animation: bike-across 25s ease-in-out infinite;
+}
+.basketball {
+  left: 65%;
+}
+@keyframes bike-across {
+  0% {
+    transform: translate(80vw, 0px);
+  }
+  100% {
+    transform: translate(-80vw, 0px);
+  }
+}
+@keyframes back-forth {
+  0% {
+    transform: translate(0px, 0px);
+  }
+  25% {
+    transform: translate(-10rem, 0px);
+  }
+  26% {
+    transform: translate(-10rem, 0px) rotateY(180deg);
+    // transform: translate(10rem, 0px);
+  }
+  // 50% {
+  //   transform: translate(-80vw, 0px);
+  // }
+  75% {
+    transform: translate(6rem, 0px) rotateY(180deg);
+  }
+  76% {
+    transform: translate(6rem, 0px) rotateY(0deg);
+  }
+  100% {
+    transform: translate(0px, 0px) rotateY(0deg);
   }
 }
 </style>
