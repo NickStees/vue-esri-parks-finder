@@ -332,7 +332,7 @@ input[type="search"] {
 .dog {
   left: 25%;
   animation: back-forth 20s ease-in-out infinite;
-  top: -1.02rem;
+  top: -0.095rem !important;
   font-size: 85%;
 }
 .bike {
