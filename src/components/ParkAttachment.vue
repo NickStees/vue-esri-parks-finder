@@ -9,7 +9,8 @@
     <a
       v-else-if="attachment.contentType == 'application/pdf'"
       :href="getAttachmentUrl(parkId, attachment)"
-    >{{attachment.name}}</a>
+      :title="attachment.name"
+    >📍 Shelter Map (pdf)</a>
     <a v-else :href="getAttachmentUrl(parkId, attachment)">{{attachment.name}}</a>
   </div>
 </template>

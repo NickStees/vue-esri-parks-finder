@@ -5,12 +5,10 @@
       {{selectedPark.FULLADDR}} {{selectedPark.CITY}}
     </a>
     <a :href="googleDirections" class="btn btn-default btn-xs pull-right">Get Directions</a>
-    <h1>{{selectedPark.NAME}}</h1>
+    <h1 style="clear:both;margin-top:44px;">{{selectedPark.NAME}}</h1>
     <small v-if="selectedPark.PARKALIAS">Also known as: {{selectedPark.PARKALIAS}}</small>
-    <p
-      v-if="selectedPark.DESCRIPT || selectedPark.DESCRIPT2"
-    >{{selectedPark.DESCRIPT}} {{selectedPark.DESCRIPT2}}</p>
-    <hr>
+    <p v-if="selectedPark.DESCRIPT">{{selectedPark.DESCRIPT}}</p>
+    <p v-if="selectedPark.DESCRIPT2">{{selectedPark.DESCRIPT2}}</p>
     <ul class="list-group">
       <li class="list-group-item" v-if="selectedPark.OPERDAYS">
         Open:
@@ -24,6 +22,12 @@
         Phone:
         <strong>
           <a :href="telHref">{{selectedPark.PHONE}}</a>
+        </strong>
+      </li>
+      <li class="list-group-item" v-if="selectedPark.SHELTERURL">
+        Shelter:
+        <strong>
+          <a :href="selectedPark.SHELTERURL">Online Information</a>
         </strong>
       </li>
     </ul>
