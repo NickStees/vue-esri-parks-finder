@@ -10,6 +10,7 @@ module.exports = {
         paths: glob.sync([
           path.join(__dirname, "./src/index.html"),
           path.join(__dirname, "./**/*.vue"),
+          path.join(__dirname, "./src/components/*.vue"),
           path.join(__dirname, "./src/**/*.js"),
         ]),
       }),
