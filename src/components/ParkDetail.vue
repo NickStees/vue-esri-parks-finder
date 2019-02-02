@@ -100,9 +100,9 @@ export default {
         "+" +
         encodeURI(park.attributes.STATE) +
         "&markers=color:red%7Clabel:P%7C" +
-        park.latlong[1] +
+        park.location.lat +
         "," +
-        park.latlong[0] +
+        park.location.long +
         "&zoom=16&size=555x350&key=" +
         "AIzaSyC-ANZln2BZrn95EVc3IiQUVF-xmAZW2uU"
       );

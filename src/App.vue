@@ -22,17 +22,23 @@
         </div>
 
         <div class="col-sm-6">
+          <ul v-if="messages.length >= 1">
+            <li v-for="message in messages" :key="message">{{message}}</li>
+          </ul>
+          <h4>Park Amenities</h4>
+          <v-select multiple v-model="selected" :options="options"></v-select>
+          <hr>
           <input
             type="search"
             placeholder="Type to filter"
             v-model="filterQuery"
             class="park-search"
           >
-          <ul v-if="messages.length >= 1">
-            <li v-for="message in messages" :key="message">{{message}}</li>
-          </ul>
-          <h4>Amenities</h4>
-          <v-select multiple v-model="selected" :options="options"></v-select>
+          <div class="checkbox sort-dist text-right">
+            <label>
+              <input type="checkbox" v-model="sortByDist" @click="getCurrentPos"> Sort by Distance</span>
+            </label>
+          </div>
           <div class="meta-info">
             <small class="text-muted text-right" v-if="parksList.length !== displayedParks.length">
               Displaying
@@ -51,7 +57,7 @@
             <ul v-if="displayedParks.length" class="parklist">
               <ParkListItem
                 v-for="park in displayedParks"
-                :key="park.attributes.NAME"
+                :key="park.attributes.GlobalID"
                 :park="park"
                 @view="viewParkDetails"
               />
@@ -94,7 +100,9 @@ export default {
       options: [],
       selected: null,
       messages: [],
-      showLoader: true
+      showLoader: true,
+      currentPos: {},
+      sortByDist: false,
     };
   },
   mounted() {
@@ -107,7 +115,8 @@ export default {
       .then(response => {
         this.showLoader = false;
         // Sort parks then set them into vue.js to render the data
-        self.parksList = response.data.features.sort(function(a, b) {
+        var allParks = response.data.features
+          .sort(function(a, b) {
           //  sort alphabetical by default
           var nameA = a.attributes.NAME.toLowerCase(),
             nameB = b.attributes.NAME.toLowerCase();
@@ -118,6 +127,14 @@ export default {
           if (nameA > nameB) return 1;
           return 0; //default return value (no sorting)
         });
+        // figure out lat/long for each park
+        var processedParks = allParks
+        .map(function(item) {
+          var newitem = item;
+          newitem.location = newitem.geometry ? self.webMercatorToGeographic(newitem.geometry) : []
+          return newitem
+        });
+          self.parksList = processedParks
         // Store Human Readable Field names
         self.fieldNames = response.data.fieldAliases;
         self.fields = response.data.fields
@@ -150,11 +167,26 @@ export default {
   },
   computed: {
     displayedParks() {
+      var self = this
       // This is a filtered set of results that is returned to the vue to be rendered
       var parks = this.parksList; //take all the parks
+      if(this.sortByDist){
+        // sort by distance
+        parks.sort(function(a, b) {
+          //  sort alphabetical by default
+          var nameA = a.distanceTo,
+            nameB = b.distanceTo;
+          if (nameA < nameB)
+            //sort string ascending
+            return -1;
+
+          if (nameA > nameB) return 1;
+          return 0; //default return value (no sorting)
+        });
+      }
       var filteredParks = parks.filter(this.filterItems); //filter them against the input
       // then fitler the input against the amenities
-      if (this.selected && this.selected.length > 0) {
+      if (this.parksList.length && this.selected && this.selected.length > 0) {
         this.selected.forEach(function(option) {
           filteredParks = filteredParks.filter(function(item) {
             return item.attributes[option.value] == "Yes";
@@ -188,7 +220,7 @@ export default {
       // take the current park and pipe it into the details template
       // pull out park amenities into an array for easier rendering
       park.attributes.amenities = [];
-      park.latlong = this.webMercatorToGeographic(park.geometry);
+      park.location = this.webMercatorToGeographic(park.geometry);
       for (var key in park.attributes) {
         if (park.attributes[key] == "Yes") {
           // Add this object key to the amenities list
@@ -202,7 +234,77 @@ export default {
       // converts ESRI geometry from Web Mercator units to geographic units.
       // uses a mapbox convert because I don't wan to mess with Esri's bloated API
       // https://github.com/mapbox/sphericalmercator/blob/master/sphericalmercator.js
-      return merc.inverse([geometry.x, geometry.y]);
+      const latlong =  merc.inverse([geometry.x, geometry.y]);
+      return {
+        "lat": latlong[1],
+        "long": latlong[0]
+      }
+    },
+    distance(lat1, lon1, unit) {
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+//:::                                                                         :::
+//:::  This routine calculates the distance between two points (given the     :::
+//:::  latitude/longitude of those points). It is being used to calculate     :::
+//:::  the distance between two locations using GeoDataSource (TM) prodducts  :::
+//:::                                                                         :::
+//:::  Definitions:                                                           :::
+//:::    South latitudes are negative, east longitudes are positive           :::
+//:::                                                                         :::
+//:::  Passed to function:                                                    :::
+//:::    lat1, lon1 = Latitude and Longitude of point 1 (in decimal degrees)  :::
+//:::    lat2, lon2 = Latitude and Longitude of point 2 (in decimal degrees)  :::
+//:::    unit = the unit you desire for results                               :::
+//:::           where: 'M' is statute miles (default)                         :::
+//:::                  'K' is kilometers                                      :::
+//:::                  'N' is nautical miles                                  :::
+//:::                                                                         :::
+//:::  Worldwide cities and other features databases with latitude longitude  :::
+//:::  are available at https://www.geodatasource.com                         :::
+//:::                                                                         :::
+//:::  For enquiries, please contact sales@geodatasource.com                  :::
+//:::                                                                         :::
+//:::  Official Web site: https://www.geodatasource.com                       :::
+//:::                                                                         :::
+//:::               GeoDataSource.com (C) All Rights Reserved 2018            :::
+//:::                                                                         :::
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+      var lat2 = this.currentPos.coords.latitude
+      var lon2 = this.currentPos.coords.latitude
+      if ((lat1 == lat2) && (lon1 == lon2)) {
+        return 0;
+      }
+      else {
+        var radlat1 = Math.PI * lat1/180;
+        var radlat2 = Math.PI * lat2/180;
+        var theta = lon1-lon2;
+        var radtheta = Math.PI * theta/180;
+        var dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+        if (dist > 1) {
+          dist = 1;
+        }
+        dist = Math.acos(dist);
+        dist = dist * 180/Math.PI;
+        dist = dist * 60 * 1.1515;
+        // dist = Math.round(dist*0.000621371192); //convet to miles
+        return Math.round(dist * 3.2808);
+      }
+    },
+    getCurrentPos(){
+      var self = this;
+      navigator.geolocation.getCurrentPosition(function(position) {
+        self.currentPos = position;
+        self.addDistanceToParks()
+      });
+    },
+    addDistanceToParks(){
+      var self = this;
+      this.parksList = this.parksList.map(function(item) {
+          var newitem = item;
+          newitem.distanceTo = self.distance(item.location.lat, item.location.long)
+          // updating key to force re-render of component
+          newitem.attributes.GlobalID = newitem.attributes.GlobalID+"1"
+          return newitem
+        });
     }
   }
 };
@@ -267,6 +369,9 @@ input[type="search"] {
 }
 .meta-info {
   min-height: 2.5rem;
+}
+.sort-dist{
+  font-size: 80%;
 }
 // ajax loader
 .lds-ring {
