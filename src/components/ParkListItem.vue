@@ -1,5 +1,5 @@
 <template>
-  <li @click="$emit('view', park.attributes)">
+  <li @click="$emit('view', park)">
     <span class="address">{{park.attributes.FULLADDR}}</span>
     <strong>{{park.attributes.NAME}}</strong>
     <small v-if="park.attributes.PARKALIAS">({{park.attributes.PARKALIAS}})</small>

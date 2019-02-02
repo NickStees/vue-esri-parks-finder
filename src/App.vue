@@ -73,6 +73,10 @@ import ParkListItem from "./components/ParkListItem.vue";
 import vSelect from "vue-select";
 import axios from "axios";
 
+import sphericalmercator from "@mapbox/sphericalmercator";
+var merc = new sphericalmercator({
+  size: 256
+});
 export default {
   name: "app",
   components: {
@@ -98,7 +102,7 @@ export default {
     var self = this;
     axios
       .get(
-        "https://spatial.tampagov.net/arcgis/rest/services/Parks/Parks/MapServer/0/query?f=json&where=1%3D1&returnGeometry=false&spatialRel=esriSpatialRelIntersects&outFields=*"
+        "https://spatial.tampagov.net/arcgis/rest/services/Parks/Parks/MapServer/0/query?f=json&where=1%3D1&returnGeometry=true&spatialRel=esriSpatialRelIntersects&outFields=*"
       )
       .then(response => {
         this.showLoader = false;
@@ -183,15 +187,22 @@ export default {
       document.getElementById("park-details").scrollIntoView();
       // take the current park and pipe it into the details template
       // pull out park amenities into an array for easier rendering
-      park.amenities = [];
-      for (var key in park) {
-        if (park[key] == "Yes") {
+      park.attributes.amenities = [];
+      park.latlong = this.webMercatorToGeographic(park.geometry);
+      for (var key in park.attributes) {
+        if (park.attributes[key] == "Yes") {
           // Add this object key to the amenities list
           // Use the fieldNames object to translate the keys into human readable format
-          park.amenities.push(this.fieldNames[key]);
+          park.attributes.amenities.push(this.fieldNames[key]);
         }
       }
       this.selectedPark = park;
+    },
+    webMercatorToGeographic(geometry) {
+      // converts ESRI geometry from Web Mercator units to geographic units.
+      // uses a mapbox convert because I don't wan to mess with Esri's bloated API
+      // https://github.com/mapbox/sphericalmercator/blob/master/sphericalmercator.js
+      return merc.inverse([geometry.x, geometry.y]);
     }
   }
 };
