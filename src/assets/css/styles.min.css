@@ -41,7 +41,7 @@ specific components and modules on the page. ** Look under Typography -> Text-co
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
 /*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
-@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,300,400italic);
+/* @import url(https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,300,400italic); */
 html {
   font-family: sans-serif;
   -ms-text-size-adjust: 100%;
@@ -6848,7 +6848,7 @@ button.close {
   display: none;
   max-width: 276px;
   padding: 1px;
-  font-family: "Open Sans", Arial, sans-serif;
+  /* font-family: "Open Sans", Arial, sans-serif; */
   font-style: normal;
   font-weight: normal;
   letter-spacing: normal;
@@ -8127,7 +8127,7 @@ button.link:focus {
   padding: 5px 10px;
 }
 .btn.btn-sm, .btn-group-sm > .btn, .btn.btn-xs, .btn-group-xs > .btn {
-  font-family: "Open Sans", Arial, sans-serif;
+  /* font-family: "Open Sans", Arial, sans-serif; */
   font-weight: 700;
 }
 .btn.btn-standard {
@@ -8181,7 +8181,7 @@ button.link:focus {
 
 #main-content form .btn,
 .views-exposed-form .btn {
-  font-family: "Open Sans", Arial, sans-serif;
+  /* font-family: "Open Sans", Arial, sans-serif; */
   padding: 3px 22px;
   font-weight: 400;
 }
@@ -8969,7 +8969,7 @@ Pagination for paginated results. Note: prev and next are currently unstyled
 }
 .page-search .search-results h3 {
   font-weight: bold;
-  font-family: "Open Sans", arial, sans-serif;
+  /* font-family: "Open Sans", arial, sans-serif; */
   font-size: 1.25rem;
 }
 
@@ -9003,7 +9003,7 @@ body.page-node-webform-results #edit-components.webform-component-select-table {
 .field-name-share-block .title,
 .pane-sharethis-sharethis-block .pane-title,
 .pane-sharethis-sharethis-block .title {
-  font-family: "Open Sans", arial, sans-serif;
+  /* font-family: "Open Sans", arial, sans-serif; */
   font-size: 21px;
   text-transform: uppercase;
   color: #66686b;
@@ -9474,7 +9474,7 @@ used to limit its width.
 }
 .pane-menu .nav li a {
   text-transform: uppercase;
-  font-family: "Open Sans", arial, sans-serif;
+  /* font-family: "Open Sans", arial, sans-serif; */
   text-decoration: none !important;
   font-weight: 600;
   font-size: 1.0625rem;
@@ -9697,7 +9697,7 @@ on a colored background.
 .newsletter .newsletter-signup .email-submit {
   font-weight: bold;
   border: 0;
-  font-family: "Open Sans", Arial, sans-serif;
+  /* font-family: "Open Sans", Arial, sans-serif; */
   background-color: #ffffff;
   color: #0072bc;
   font-size: 150%;
@@ -11130,7 +11130,7 @@ An expandable accordian of definiton lists
 .bus-accordion dd ul li a {
   color: #3d4045;
   font-size: 1.125rem;
-  font-family: "Open Sans", arial, sans-serif;
+  /* font-family: "Open Sans", arial, sans-serif; */
   padding: 10px 40px;
   margin: 0 -15px;
   display: block;
@@ -11858,25 +11858,25 @@ ul.quicktabs-tabs li a:hover {
 }
 .node-type-panopoly-page .field-name-body h1,
 .node-type-panopoly-page .page-content h1 {
-  font-family: "Open Sans", arial, sans-serif;
+  /* font-family: "Open Sans", arial, sans-serif; */
   font-size: 1.875rem;
   font-weight: 400;
 }
 .node-type-panopoly-page .field-name-body h2,
 .node-type-panopoly-page .page-content h2 {
-  font-family: "Open Sans", arial, sans-serif;
+  /* font-family: "Open Sans", arial, sans-serif; */
   font-size: 1.5rem;
   font-weight: 400;
 }
 .node-type-panopoly-page .field-name-body h3,
 .node-type-panopoly-page .page-content h3 {
-  font-family: "Open Sans", arial, sans-serif;
+  /* font-family: "Open Sans", arial, sans-serif; */
   font-size: 1.5rem;
   font-weight: 400;
 }
 .node-type-panopoly-page .field-name-body h4,
 .node-type-panopoly-page .page-content h4 {
-  font-family: "Open Sans", arial, sans-serif;
+  /* font-family: "Open Sans", arial, sans-serif; */
   font-size: 1.5rem;
   font-weight: 400;
 }
@@ -11933,7 +11933,7 @@ ul.quicktabs-tabs li a:hover {
   margin-bottom: 50px;
 }
 .view-faq .views-row h4 {
-  font-family: "Open Sans", arial, sans-serif;
+  /* font-family: "Open Sans", arial, sans-serif; */
   font-size: 18px;
   font-weight: 400;
 }
@@ -11991,11 +11991,11 @@ ul.quicktabs-tabs li a:hover {
   margin-bottom: 20px;
 }
 .view-departments .view-content h4 {
-  font-family: "Open Sans", arial, sans-serif;
+  /* font-family: "Open Sans", arial, sans-serif; */
   font-weight: 600;
 }
 .view-departments .view-content h5 {
-  font-family: "Open Sans", arial, sans-serif;
+  /* font-family: "Open Sans", arial, sans-serif; */
   font-weight: 600;
 }
 .view-departments .view-content .mobileOnly {
