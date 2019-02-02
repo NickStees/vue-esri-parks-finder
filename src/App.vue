@@ -22,7 +22,12 @@
         </div>
 
         <div class="col-sm-6">
-          <input type="search" placeholder="Type to filter" v-model="filterQuery">
+          <input
+            type="search"
+            placeholder="Type to filter"
+            v-model="filterQuery"
+            class="park-search"
+          >
           <ul v-if="messages.length >= 1">
             <li v-for="message in messages" :key="message">{{message}}</li>
           </ul>
@@ -194,10 +199,23 @@ export default {
 
 <style lang="scss">
 #app {
-  // font-family: "Avenir", Helvetica, Arial, sans-serif;
+  font-family: "Open Sans", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
+}
+.park-search {
+  color: #000;
+  font-size: 18px;
+  font-weight: 400;
+  padding: 4px 14px;
+  background: transparent none repeat scroll 0 0;
+  background-color: #f5f5f5;
+  border: 1px solid #ccc;
+  height: auto;
+  border-radius: 4px;
+  display: inline-block;
+  width: 100%;
 }
 .parklist li {
   list-style: none;
