@@ -17,7 +17,7 @@
         </div>
       </div>
       <div class="row">
-        <div class="col-sm-6">&nbsp;
+        <div id="park-details" class="col-sm-6">&nbsp;
           <ParkDetail v-if="selectedPark" :selectedPark="selectedPark"/>
         </div>
 
@@ -175,7 +175,7 @@ export default {
       }
     },
     viewParkDetails(park) {
-      window.scrollTo(0, 0);
+      document.getElementById("park-details").scrollIntoView();
       // take the current park and pipe it into the details template
       // pull out park amenities into an array for easier rendering
       park.amenities = [];
@@ -194,7 +194,7 @@ export default {
 
 <style lang="scss">
 #app {
-  font-family: "Avenir", Helvetica, Arial, sans-serif;
+  // font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;

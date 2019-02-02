@@ -1532,7 +1532,7 @@ hr {
 
 h1, h2, h3, h4, h5, h6,
 .h1, .h2, .h3, .h4, .h5, .h6 {
-  font-family: "league_gothicregular", arial, Helvetica, sans-serif;
+  /* font-family: "league_gothicregular", arial, Helvetica, sans-serif; */
   font-weight: 600;
   line-height: 1.1;
   color: inherit;
@@ -7607,39 +7607,8 @@ Easily realign text to components with text alignment classes.
 }
 
 
-/*doc
----
-title: Fonts
-category: typography
----
 
-The current availalble font families are 'Open Sans',Arial,sans-serif;
 
-Font Family Sets
----------------------------------
-'Open Sans',Arial,sans-serif
-'league_gothicregular',arial,Helvetica,sans-serif;
-
-Fonts In Families                                                        | Weights
------------------------------------------------------------------------------- | -----------------
-<span style="font-family:league_gothicregular;">league_gothicregular</span>    | `normal`
-<span style="font-family:league_gothicitalic;">league_gothicitalic</span>    | `normal`
-<span style="font-family:league_gothicCnRg;">league_gothicCnRg</span>    | `normal`
-<span style="font-family:league_gothiccondensed_italic;">league_gothiccondensed_italic</span>   | `normal`
-<span style="font-family:Open Sans;font-weight:400;">Open Sans</span>   | `400`
-<span style="font-family:Open Sans;font-weight:600;">Open Sans</span>   | `600`
-<span style="font-family:Open Sans;font-weight:700;">Open Sans</span>   | `700`
-<span style="font-family:Open Sans;font-weight:300;">Open Sans</span>   | `300`
-<span style="font-family:Open Sans;font-weight:400;"><em>Open Sans<em></span>| `400italic`
-<span class="monospace">Monospace class</span>| `.monospace`
-
-*/
-@font-face {
-  font-family: 'league_gothicregular';
-  src:  url("../fonts/leaguegothic-regular-webfont.woff2") format("woff2");
-  font-weight: normal;
-  font-style: normal;
-}
 
 .monospace {
   font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
@@ -8110,7 +8079,7 @@ button.link:focus {
 
 .btn {
   color: #fff;
-  font-family: "league_gothicregular", arial, Helvetica, sans-serif;
+  /* font-family: "league_gothicregular", arial, Helvetica, sans-serif; */
   font-size: 25px;
   padding: 13px 25px;
   width: 100%;
@@ -8745,7 +8714,7 @@ specified in em's. *requires fontawesome*
 }
 
 .page-header {
-  font-family: "league_gothicregular", arial, Helvetica, sans-serif;
+  /* font-family: "league_gothicregular", arial, Helvetica, sans-serif; */
   font-size: 3.5rem;
   color: #fff;
   border: medium none;
@@ -8769,7 +8738,7 @@ specified in em's. *requires fontawesome*
   margin: 0 0 10px;
 }
 .slideshow-field-active .title-wrapper .flexslider .views-field {
-  font-family: "league_gothicregular", arial, Helvetica, sans-serif;
+  /* font-family: "league_gothicregular", arial, Helvetica, sans-serif; */
   font-size: 3.5rem;
   color: #fff;
   border: medium none;
@@ -9236,7 +9205,7 @@ provide primary paths or next steps. .content-button must be wrapped in a .row-b
 .content-button {
   display: block;
   color: #232323;
-  font-family: "league_gothicregular", arial, Helvetica, sans-serif;
+  /* font-family: "league_gothicregular", arial, Helvetica, sans-serif; */
   font-size: 1.875rem;
   padding: 0 15px;
   margin: 5px 5px;
@@ -9529,7 +9498,7 @@ used to limit its width.
 }
 .pane-menu .nav li .nolink {
   font-size: 2.1875rem;
-  font-family: "league_gothicregular", arial, Helvetica, sans-serif;
+  /* font-family: "league_gothicregular", arial, Helvetica, sans-serif; */
   text-transform: uppercase;
 }
 .pane-menu .nav li .separator hr {
@@ -10448,7 +10417,7 @@ The top navigation bar used on the website, modified from [bootstraps default na
 .navbar .menu-region #block-search-form--2 .input-group input[type="text"] {
   border: 0;
   color: #232323;
-  font-family: "league_gothicregular", arial, Helvetica, sans-serif;
+  /* font-family: "league_gothicregular", arial, Helvetica, sans-serif; */
   font-size: 30px;
   text-transform: uppercase;
 }
@@ -10587,7 +10556,7 @@ The top navigation bar used on the website, modified from [bootstraps default na
 .navbar #social-nav #block-search-form .input-group .form-text {
   border: 0;
   color: #232323;
-  font-family: "league_gothicregular", arial, Helvetica, sans-serif;
+  /* font-family: "league_gothicregular", arial, Helvetica, sans-serif; */
   font-size: 15px;
   text-transform: uppercase;
 }
@@ -10621,7 +10590,7 @@ The top navigation bar used on the website, modified from [bootstraps default na
   font-weight: 500;
   text-transform: uppercase;
   margin: 0;
-  font-family: "league_gothicregular", arial, Helvetica, sans-serif;
+  /* font-family: "league_gothicregular", arial, Helvetica, sans-serif; */
 }
 @media only screen and (min-width: 768px) {
   .navbar .navbar-nav {
@@ -10852,7 +10821,7 @@ Added css animations in version 1.0.
   height: 70px;
   position: relative;
   width: 100%;
-  font-family: "league_gothicregular", arial, Helvetica, sans-serif;
+  /* font-family: "league_gothicregular", arial, Helvetica, sans-serif; */
   font-size: 2.8125rem;
   color: #0072bc;
   white-space: nowrap;
@@ -11132,7 +11101,7 @@ An expandable accordian of definiton lists
 }
 .bus-accordion dt a {
   font-size: 3rem;
-  font-family: "league_gothicregular", arial, Helvetica, sans-serif;
+  /* font-family: "league_gothicregular", arial, Helvetica, sans-serif; */
   padding: 10px 52px 10px 35px;
   text-transform: uppercase;
   color: #555555;
@@ -11194,7 +11163,7 @@ At fullscreen these are buttons but on mobile its a vertical button list.
 .pane-menu-menu-dept-mayor {
   float: left;
   width: 100%;
-  font-family: "league_gothicregular", arial, Helvetica, sans-serif;
+  /* font-family: "league_gothicregular", arial, Helvetica, sans-serif; */
   font-size: 15px;
   margin-bottom: 20px;
   margin-top: 15px;
@@ -11286,7 +11255,7 @@ At fullscreen these are buttons but on mobile its a vertical button list.
 }
 .mayor-top .title {
   font-size: 5.875rem;
-  font-family: "league_gothicregular", arial, Helvetica, sans-serif;
+  /* font-family: "league_gothicregular", arial, Helvetica, sans-serif; */
   color: #ffffff;
   line-height: 0.9;
   text-transform: uppercase;
@@ -11344,7 +11313,7 @@ At fullscreen these are buttons but on mobile its a vertical button list.
 .mayor-top .readmore {
   display: block;
   font-size: 3rem;
-  font-family: "league_gothicregular", arial, Helvetica, sans-serif;
+  /* font-family: "league_gothicregular", arial, Helvetica, sans-serif; */
   background: #0072bc none repeat scroll 0 0;
   color: #ffffff;
   display: block;
@@ -11369,7 +11338,7 @@ At fullscreen these are buttons but on mobile its a vertical button list.
 
 .weekly-view .title {
   font-size: 5.25rem;
-  font-family: "league_gothicregular", arial, Helvetica, sans-serif;
+  /* font-family: "league_gothicregular", arial, Helvetica, sans-serif; */
   color: #232323;
   text-transform: uppercase;
   line-height: 0.9;
@@ -11417,7 +11386,7 @@ At fullscreen these are buttons but on mobile its a vertical button list.
   font-size: 2.125rem;
   line-height: 0.9;
   text-transform: uppercase;
-  font-family: "league_gothicregular", arial, Helvetica, sans-serif;
+  /* font-family: "league_gothicregular", arial, Helvetica, sans-serif; */
   margin-bottom: 5px;
   margin-top: 30px;
 }
@@ -11494,7 +11463,7 @@ At fullscreen these are buttons but on mobile its a vertical button list.
   font-size: 3.5rem;
   line-height: 1;
   text-transform: uppercase;
-  font-family: "league_gothicregular", arial, Helvetica, sans-serif;
+  /* font-family: "league_gothicregular", arial, Helvetica, sans-serif; */
   margin-bottom: 10px;
 }
 @media only screen and (min-width: 768px) {
@@ -11528,7 +11497,7 @@ At fullscreen these are buttons but on mobile its a vertical button list.
   color: #0072bc;
   display: inline-block;
   font-size: 2.8125rem;
-  font-family: "league_gothicregular", arial, Helvetica, sans-serif;
+  /* font-family: "league_gothicregular", arial, Helvetica, sans-serif; */
   font-weight: 600;
   text-transform: uppercase;
   margin-top: 15px;
@@ -11578,7 +11547,7 @@ At fullscreen these are buttons but on mobile its a vertical button list.
   font-size: 3.5rem;
   line-height: 1;
   text-transform: uppercase;
-  font-family: "league_gothicregular", arial, Helvetica, sans-serif;
+  /* font-family: "league_gothicregular", arial, Helvetica, sans-serif; */
   margin-bottom: 10px;
   max-width: 650px;
 }
@@ -11590,7 +11559,7 @@ At fullscreen these are buttons but on mobile its a vertical button list.
 .contact-mayor .link {
   font-size: 3rem;
   background: #8dc63f;
-  font-family: "league_gothicregular", arial, Helvetica, sans-serif;
+  /* font-family: "league_gothicregular", arial, Helvetica, sans-serif; */
   text-transform: uppercase;
   color: #232323;
   padding: 5px 40px;
@@ -11724,7 +11693,7 @@ ul.quicktabs-tabs li a:hover {
   background: #0072bc none repeat scroll 0 0;
   border-bottom: 3px solid #ffffff;
   color: #ffffff;
-  font-family: "league_gothicregular", arial, Helvetica, sans-serif;
+  /* font-family: "league_gothicregular", arial, Helvetica, sans-serif; */
   font-size: 30px;
   text-align: center;
   line-height: 0.9;
