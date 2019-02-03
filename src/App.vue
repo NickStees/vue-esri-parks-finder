@@ -3,20 +3,9 @@
     <div class="content container">
       <div class="row text-center">
         <h1>Find a Tampa Park</h1>
-        <div class="park">
-          <div class="sky">
-            <div class="sun">🌞</div>
-          </div>
-          <div class="ground">
-            <div class="tree1">🌳</div>
-            <div class="dog">🐕</div>
-            <div class="bike">🚴</div>
-            <div class="basketball">⛹</div>
-            <div class="tree2">🌲</div>
-          </div>
-        </div>
+        <park-animation/>
       </div>
-      <div class="row">
+      <div class="row main-app">
         <div id="park-details" class="col-sm-6">&nbsp;
           <ParkDetail v-if="selectedPark" :selectedPark="selectedPark"/>
         </div>
@@ -47,12 +36,7 @@
               <strong>{{parksList.length}}</strong> parks
             </small>
           </div>
-          <div class="lds-ring" v-if="showLoader">
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-          </div>
+          <ajax-loader v-if="showLoader"/>
           <div v-else>
             <ul v-if="displayedParks.length" class="parklist">
               <ParkListItem
@@ -76,8 +60,11 @@
 <script>
 import ParkDetail from "./components/ParkDetail.vue";
 import ParkListItem from "./components/ParkListItem.vue";
+import ParkAnimation from "./components/ParkAnimation.vue";
+import AjaxLoader from "./components/AjaxLoader.vue";
 import vSelect from "vue-select";
 import axios from "axios";
+import sortBy from "lodash/sortBy";
 
 import sphericalmercator from "@mapbox/sphericalmercator";
 var merc = new sphericalmercator({
@@ -92,7 +79,9 @@ export default {
   components: {
     ParkDetail,
     ParkListItem,
-    vSelect
+    vSelect,
+    ParkAnimation,
+    AjaxLoader
   },
   data() {
     return {
@@ -100,7 +89,7 @@ export default {
       selectedPark: {},
       filterQuery: "",
       fieldNames: {},
-      fields: {},
+      // fields: {},
       options: [],
       selected: null,
       messages: [],
@@ -118,20 +107,8 @@ export default {
       )
       .then(response => {
         this.showLoader = false;
-        // Sort parks then set them into vue.js to render the data
-        var allParks = response.data.features.sort(function(a, b) {
-          //  sort alphabetical by default
-          var nameA = a.attributes.NAME.toLowerCase(),
-            nameB = b.attributes.NAME.toLowerCase();
-          if (nameA < nameB)
-            //sort string ascending
-            return -1;
-
-          if (nameA > nameB) return 1;
-          return 0; //default return value (no sorting)
-        });
-        // figure out lat/long for each park
-        var processedParks = allParks.map(function(item) {
+        var processedParks = response.data.features.map(function(item) {
+          // figure out lat/long for each park based of ESRI Geometry
           var newitem = item;
           newitem.location = newitem.geometry
             ? self.webMercatorToGeographic(newitem.geometry)
@@ -141,28 +118,21 @@ export default {
         self.parksList = processedParks;
         // Store Human Readable Field names
         self.fieldNames = response.data.fieldAliases;
-        self.fields = response.data.fields
+        var dropDownOptions = [];
+        response.data.fields
           .filter(function(field) {
             // if its a lenght of 3 its likely a yes/no value which is an ammenity
             return field.length === 3;
           })
-          .sort(function(a, b) {
-            //  sort alphabetical by default
-            var nameA = a.alias.toLowerCase(),
-              nameB = b.alias.toLowerCase();
-            if (nameA < nameB)
-              //sort string ascending
-              return -1;
-
-            if (nameA > nameB) return 1;
-            return 0; //default return value (no sorting)
-          })
           .forEach(item => {
-            self.options.push({
+            dropDownOptions.push({
               value: item.name,
               label: item.alias
             });
           });
+        self.options = sortBy(dropDownOptions, o => {
+          return o.label;
+        });
       })
       .catch(e => {
         this.showLoader = false;
@@ -178,28 +148,13 @@ export default {
       var parks = this.parksList; //take all the parks
       if (this.sortByDist) {
         // sort by distance
-        parks.sort(function(a, b) {
-          //  sort alphabetical by default
-          var nameA = a.distanceTo,
-            nameB = b.distanceTo;
-          if (nameA < nameB)
-            //sort string ascending
-            return -1;
-
-          if (nameA > nameB) return 1;
-          return 0; //default return value (no sorting)
+        parks = sortBy(parks, o => {
+          return o.distanceTo;
         });
       } else {
-        parks.sort(function(a, b) {
-          //  sort alphabetical by default
-          var nameA = a.attributes.NAME.toLowerCase(),
-            nameB = b.attributes.NAME.toLowerCase();
-          if (nameA < nameB)
-            //sort string ascending
-            return -1;
-
-          if (nameA > nameB) return 1;
-          return 0; //default return value (no sorting)
+        //  sort alphabetical by default
+        parks = sortBy(parks, o => {
+          return o.attributes.NAME.toLowerCase();
         });
       }
       var filteredParks = parks.filter(this.filterItems); //filter them against the input
@@ -259,6 +214,7 @@ export default {
       };
     },
     distance(lat1, lon1) {
+      // find distance from current location
       var lat2 = this.currentPos.coords.latitude;
       var lon2 = this.currentPos.coords.longitude;
       var R = 6371; // km
@@ -331,6 +287,12 @@ export default {
 li {
   line-height: 1.8;
 }
+.main-app {
+  background-color: #6fc56a;
+  h4 {
+    color: white;
+  }
+}
 .parklist {
   max-height: 60vh;
   overflow: auto;
@@ -363,161 +325,5 @@ input[type="search"] {
 }
 .sort-dist {
   font-size: 80%;
-}
-// ajax loader
-.lds-ring {
-  display: inline-block;
-  position: relative;
-  width: 64px;
-  height: 64px;
-  margin-left: 38%;
-}
-.lds-ring div {
-  box-sizing: border-box;
-  display: block;
-  position: absolute;
-  width: 51px;
-  height: 51px;
-  margin: 6px;
-  border: 6px solid rgb(41, 41, 41);
-  border-radius: 50%;
-  animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-  border-color: rgb(41, 41, 41) transparent transparent transparent;
-}
-.lds-ring div:nth-child(1) {
-  animation-delay: -0.45s;
-}
-.lds-ring div:nth-child(2) {
-  animation-delay: -0.3s;
-}
-.lds-ring div:nth-child(3) {
-  animation-delay: -0.15s;
-}
-@keyframes lds-ring {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-.park {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 1rem;
-  overflow: hidden;
-}
-.ground {
-  background-color: #6fc56a;
-  height: 1.5rem;
-  position: relative;
-  border-radius: 0 0 50% 50%;
-}
-.ground > div {
-  position: absolute;
-  top: -1rem;
-}
-.sky {
-  height: 3rem;
-  background-color: #b5ebff;
-  background: linear-gradient(
-    to bottom,
-    #feffff 0%,
-    #ddf1f9 35%,
-    #a0d8ef 100%
-  ); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-  position: relative;
-  border-radius: 50% 50% 0 0;
-}
-.sun {
-  position: absolute;
-  left: 15%;
-  font-size: 121%;
-  top: -0.5rem;
-  animation: slow-bounce 3.2s ease-in-out infinite;
-}
-@keyframes slow-bounce {
-  0% {
-    transform: translatey(0.3rem);
-  }
-  50% {
-    transform: translatey(0.65rem);
-  }
-  100% {
-    transform: translatey(0.3rem);
-  }
-}
-.tree1 {
-  left: 5%;
-  font-size: 111%;
-}
-.tree2 {
-  left: 83%;
-  font-size: 108%;
-}
-.dog {
-  left: 25%;
-  animation: back-forth 20s ease-in-out infinite;
-  top: -0.095rem !important;
-  font-size: 85%;
-}
-.bike {
-  left: 45%;
-  animation: bike-across 25s ease-in-out infinite;
-}
-.basketball {
-  left: 65%;
-  animation: back-forth 16s ease-in-out infinite;
-  font-size: 105%;
-}
-@keyframes bike-across {
-  0% {
-    transform: translate(80vw, 0px);
-  }
-  100% {
-    transform: translate(-80vw, 0px);
-  }
-}
-@keyframes back-forth {
-  0% {
-    transform: translate(0px, 0px);
-  }
-  25% {
-    transform: translate(-10rem, 0px);
-  }
-  26% {
-    transform: translate(-10rem, 0px) rotateY(180deg);
-    // transform: translate(10rem, 0px);
-  }
-  75% {
-    transform: translate(6rem, 0px) rotateY(180deg);
-  }
-  76% {
-    transform: translate(6rem, 0px) rotateY(0deg);
-  }
-  100% {
-    transform: translate(0px, 0px) rotateY(0deg);
-  }
-}
-@keyframes back-forth2 {
-  0% {
-    transform: translate(0px, 0px);
-  }
-  15% {
-    transform: translate(-0.5rem, 0px);
-  }
-  16% {
-    transform: translate(-0.5rem, 0px) rotateY(180deg);
-    // transform: translate(10rem, 0px);
-  }
-  65% {
-    transform: translate(1rem, 0px) rotateY(180deg);
-  }
-  66% {
-    transform: translate(1rem, 0px) rotateY(0deg);
-  }
-  100% {
-    transform: translate(0px, 0px) rotateY(0deg);
-  }
 }
 </style>
