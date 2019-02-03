@@ -28,7 +28,6 @@ export default {};
   background-color: #6fc56a;
   height: 2.5rem;
   position: relative;
-  // border-radius: 0 0 10px 10px;
 }
 .ground > div {
   position: absolute;
@@ -103,7 +102,8 @@ export default {};
     transform: translate(-10rem, 0px);
   }
   26% {
-    transform: translate(-10rem, 0px) rotateY(180deg); // transform: translate(10rem, 0px);
+    transform: translate(-10rem, 0px) rotateY(180deg);
+    // transform: translate(10rem, 0px);
   }
   75% {
     transform: translate(6rem, 0px) rotateY(180deg);
@@ -123,7 +123,8 @@ export default {};
     transform: translate(-0.5rem, 0px);
   }
   16% {
-    transform: translate(-0.5rem, 0px) rotateY(180deg); // transform: translate(10rem, 0px);
+    transform: translate(-0.5rem, 0px) rotateY(180deg);
+    // transform: translate(10rem, 0px);
   }
   65% {
     transform: translate(1rem, 0px) rotateY(180deg);

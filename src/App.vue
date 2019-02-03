@@ -29,7 +29,7 @@
             </label>
           </div>
           <div class="meta-info">
-            <small class="text-muted text-right" v-if="parksList.length !== displayedParks.length">
+            <small class="text-right" v-if="parksList.length !== displayedParks.length">
               Displaying
               <strong>{{displayedParks.length}}</strong>
               of
@@ -290,8 +290,12 @@ li {
 }
 .main-app {
   background-color: #6fc56a;
-  h4 {
+  border-radius: 0 0 10px 10px;
+  h4,
+  .sort-dist,
+  .meta-info {
     color: white;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.25);
   }
 }
 .parklist {
