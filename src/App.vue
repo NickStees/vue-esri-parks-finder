@@ -34,7 +34,7 @@
             v-model="filterQuery"
             class="park-search"
           >
-          <div class="checkbox sort-dist text-right">
+          <div class="checkbox sort-dist text-right" v-if="gpsAvailable">
             <label>
               <input type="checkbox" v-model="sortByDist" @click="getCurrentPos"> Sort by Distance from me
             </label>
@@ -84,8 +84,8 @@ var merc = new sphericalmercator({
   size: 256
 });
 Number.prototype.toRad = function() {
-   return this * Math.PI / 180;
-}
+  return (this * Math.PI) / 180;
+};
 
 export default {
   name: "app",
@@ -106,7 +106,7 @@ export default {
       messages: [],
       showLoader: true,
       currentPos: {},
-      sortByDist: false,
+      sortByDist: false
     };
   },
   mounted() {
@@ -119,8 +119,7 @@ export default {
       .then(response => {
         this.showLoader = false;
         // Sort parks then set them into vue.js to render the data
-        var allParks = response.data.features
-          .sort(function(a, b) {
+        var allParks = response.data.features.sort(function(a, b) {
           //  sort alphabetical by default
           var nameA = a.attributes.NAME.toLowerCase(),
             nameB = b.attributes.NAME.toLowerCase();
@@ -132,13 +131,14 @@ export default {
           return 0; //default return value (no sorting)
         });
         // figure out lat/long for each park
-        var processedParks = allParks
-        .map(function(item) {
+        var processedParks = allParks.map(function(item) {
           var newitem = item;
-          newitem.location = newitem.geometry ? self.webMercatorToGeographic(newitem.geometry) : []
-          return newitem
+          newitem.location = newitem.geometry
+            ? self.webMercatorToGeographic(newitem.geometry)
+            : [];
+          return newitem;
         });
-          self.parksList = processedParks
+        self.parksList = processedParks;
         // Store Human Readable Field names
         self.fieldNames = response.data.fieldAliases;
         self.fields = response.data.fields
@@ -170,10 +170,13 @@ export default {
       });
   },
   computed: {
+    gpsAvailable() {
+      return navigator.geolocation ? true : false;
+    },
     displayedParks() {
       // This is a filtered set of results that is returned to the vue to be rendered
       var parks = this.parksList; //take all the parks
-      if(this.sortByDist){
+      if (this.sortByDist) {
         // sort by distance
         parks.sort(function(a, b) {
           //  sort alphabetical by default
@@ -186,7 +189,7 @@ export default {
           if (nameA > nameB) return 1;
           return 0; //default return value (no sorting)
         });
-      } else{
+      } else {
         parks.sort(function(a, b) {
           //  sort alphabetical by default
           var nameA = a.attributes.NAME.toLowerCase(),
@@ -249,44 +252,50 @@ export default {
       // converts ESRI geometry from Web Mercator units to geographic units.
       // uses a mapbox convert because I don't wan to mess with Esri's bloated API
       // https://github.com/mapbox/sphericalmercator/blob/master/sphericalmercator.js
-      const latlong =  merc.inverse([geometry.x, geometry.y]);
+      const latlong = merc.inverse([geometry.x, geometry.y]);
       return {
-        "lat": latlong[1],
-        "long": latlong[0]
-      }
+        lat: latlong[1],
+        long: latlong[0]
+      };
     },
     distance(lat1, lon1) {
-      var lat2 = this.currentPos.coords.latitude
-      var lon2 = this.currentPos.coords.longitude
+      var lat2 = this.currentPos.coords.latitude;
+      var lon2 = this.currentPos.coords.longitude;
       var R = 6371; // km
       //has a problem with the .toRad() method below.
-      var x1 = lat2-lat1;
+      var x1 = lat2 - lat1;
       var dLat = x1.toRad();
-      var x2 = lon2-lon1;
+      var x2 = lon2 - lon1;
       var dLon = x2.toRad();
-      var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-                      Math.cos(lat1.toRad()) * Math.cos(lat2.toRad()) *
-                      Math.sin(dLon/2) * Math.sin(dLon/2);
-      var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      var a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(lat1.toRad()) *
+          Math.cos(lat2.toRad()) *
+          Math.sin(dLon / 2) *
+          Math.sin(dLon / 2);
+      var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
       var d = R * c;
-      return Math.round( (d  /= 1.60934) * 10 ) / 10; //return miles not km
+      return Math.round((d /= 1.60934) * 10) / 10; //return miles not km
     },
-    getCurrentPos(){
+    getCurrentPos() {
       var self = this;
       navigator.geolocation.getCurrentPosition(function(position) {
         self.currentPos = position;
-        self.addDistanceToParks()
+        self.addDistanceToParks();
       });
     },
-    addDistanceToParks(){
+    addDistanceToParks() {
       var self = this;
       this.parksList = this.parksList.map(function(item) {
-          var newitem = item;
-          newitem.distanceTo = self.distance(item.location.lat, item.location.long)
-          // updating key to force re-render of component
-          newitem.attributes.GlobalID = newitem.attributes.GlobalID+"1"
-          return newitem
-        });
+        var newitem = item;
+        newitem.distanceTo = self.distance(
+          item.location.lat,
+          item.location.long
+        );
+        // updating key to force re-render of component
+        newitem.attributes.GlobalID = newitem.attributes.GlobalID + "1";
+        return newitem;
+      });
     }
   }
 };
@@ -352,7 +361,7 @@ input[type="search"] {
 .meta-info {
   min-height: 2.5rem;
 }
-.sort-dist{
+.sort-dist {
   font-size: 80%;
 }
 // ajax loader
