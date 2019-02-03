@@ -264,6 +264,7 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
+  margin-bottom: 3rem;
 }
 .park-search {
   color: #000;
