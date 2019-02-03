@@ -36,7 +36,7 @@
           >
           <div class="checkbox sort-dist text-right">
             <label>
-              <input type="checkbox" v-model="sortByDist" @click="getCurrentPos"> Sort by Distance />
+              <input type="checkbox" v-model="sortByDist" @click="getCurrentPos"> Sort by Distance
             </label>
           </div>
           <div class="meta-info">
@@ -175,6 +175,18 @@ export default {
           //  sort alphabetical by default
           var nameA = a.distanceTo,
             nameB = b.distanceTo;
+          if (nameA < nameB)
+            //sort string ascending
+            return -1;
+
+          if (nameA > nameB) return 1;
+          return 0; //default return value (no sorting)
+        });
+      } else{
+        parks.sort(function(a, b) {
+          //  sort alphabetical by default
+          var nameA = a.attributes.NAME.toLowerCase(),
+            nameB = b.attributes.NAME.toLowerCase();
           if (nameA < nameB)
             //sort string ascending
             return -1;
