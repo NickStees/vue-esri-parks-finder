@@ -36,7 +36,7 @@
           >
           <div class="checkbox sort-dist text-right">
             <label>
-              <input type="checkbox" v-model="sortByDist" @click="getCurrentPos"> Sort by Distance</span>
+              <input type="checkbox" v-model="sortByDist" @click="getCurrentPos"> Sort by Distance />
             </label>
           </div>
           <div class="meta-info">
@@ -167,7 +167,6 @@ export default {
   },
   computed: {
     displayedParks() {
-      var self = this
       // This is a filtered set of results that is returned to the vue to be rendered
       var parks = this.parksList; //take all the parks
       if(this.sortByDist){
@@ -240,7 +239,7 @@ export default {
         "long": latlong[0]
       }
     },
-    distance(lat1, lon1, unit) {
+    distance(lat1, lon1) {
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 //:::                                                                         :::
 //:::  This routine calculates the distance between two points (given the     :::
