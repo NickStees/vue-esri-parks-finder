@@ -46,6 +46,9 @@
       "autoprefixer": {}
     }
   },
+  "resolutions": {
+    "terser": "3.14.1"
+  },
   "browserslist": [
     "> 1%",
     "last 2 versions",
