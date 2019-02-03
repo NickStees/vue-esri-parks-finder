@@ -25,7 +25,7 @@
           >
           <div class="checkbox sort-dist text-right" v-if="gpsAvailable">
             <label>
-              <input type="checkbox" v-model="sortByDist" @click="getCurrentPos"> Sort by Distance from me
+              <input type="checkbox" v-model="sortByDist" @click="getCurrentPos"> Sort by distance away
             </label>
           </div>
           <div class="meta-info">
