@@ -3,7 +3,7 @@
     <span class="address">{{park.attributes.FULLADDR}}</span>
     <strong>{{park.attributes.NAME}}</strong>
     <small v-if="park.attributes.PARKALIAS">({{park.attributes.PARKALIAS}})</small>
-   <div class="distance" v-if="park.distanceTo">{{park.distanceTo.toLocaleString()}}m away</div>
+   <div class="distance" v-if="park.distanceTo">{{park.distanceTo.toLocaleString()}}miles away</div>
   </li>
 </template>
 
