@@ -16,4 +16,25 @@ module.exports = {
       }),
     ],
   },
+  pwa: {
+    name: "Tampa Parks",
+    themeColor: "#4DBA87",
+    msTileColor: "#000000",
+    appleMobileWebAppCapable: "yes",
+    appleMobileWebAppStatusBarStyle: "black",
+
+    // configure the workbox plugin
+    workboxPluginMode: "GenerateSW",
+    workboxOptions: {
+      // swSrc is required in InjectManifest mode.
+      swSrc: "dev/sw.js",
+      // ...other Workbox options...
+    },
+    iconPaths: {
+      favicon16: "img/icons/favicon-16x16.png",
+      favicon32: "img/icons/favicon-32x32.png",
+      appleTouchIcon: "img/icons/apple-touch-icon.png",
+      msTileImage: "img/icons/android-chrome-512x512.png",
+    },
+  },
 };
