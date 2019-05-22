@@ -4,7 +4,10 @@
     "target": {
       "namespace": "android_app",
       "package_name": "xyz.appmaker.xemijk",
-      "sha256_cert_fingerprints": ["FF:59:21:1C:BA:15:6D:47:E3:3E:5B:EE:04:99:2D:9C:83:5A:DB:B9:84:BB:3A:01:37:16:40:01:BF:B1:F0:24"]
+      "sha256_cert_fingerprints": [
+        "FF:59:21:1C:BA:15:6D:47:E3:3E:5B:EE:04:99:2D:9C:83:5A:DB:B9:84:BB:3A:01:37:16:40:01:BF:B1:F0:24",
+        "SHA256: 11:ED:D5:64:E1:7D:DB:CC:B5:4C:BD:BA:E8:45:67:3A:4A:20:E6:D0:C0:FA:4F:C8:1F:19:49:FD:E2:ED:9C:5F"
+      ]
     }
   }
 ]
