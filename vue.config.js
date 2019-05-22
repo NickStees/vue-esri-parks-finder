@@ -25,11 +25,11 @@ module.exports = {
 
     // configure the workbox plugin
     workboxPluginMode: "GenerateSW",
-    workboxOptions: {
-      // swSrc is required in InjectManifest mode.
-      swSrc: "dev/sw.js",
-      // ...other Workbox options...
-    },
+    // workboxOptions: {
+    //   // swSrc is required in InjectManifest mode.
+    //   swSrc: "dev/sw.js",
+    //   // ...other Workbox options...
+    // },
     iconPaths: {
       favicon16: "img/icons/favicon-16x16.png",
       favicon32: "img/icons/favicon-32x32.png",
