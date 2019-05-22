@@ -1,5 +1,6 @@
 import Vue from "vue";
 import App from "./App.vue";
+import './registerServiceWorker'
 
 require("./assets/css/styles.min.css");
 
